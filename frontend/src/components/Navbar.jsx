@@ -1,58 +1,29 @@
-import React from "react";
-import { useNavigate } from "react-router";
+import React from 'react';
+import { Link } from 'react-router';
+import '../css/Navbar.css';
+import logo from './Logo.png'
 
-const Navbar = () => {
-  const navigate = useNavigate();
-
-  // handler Function for the logout operation
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:4000/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ }),
-        credentials: "include", 
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-      const data = await response.json();
-      console.log(data.message);
-      navigate("/login");
-    } catch (err) {
-      console.log(err);
-    }
-  };
+const Nav = () => {
   return (
-    <nav>
-      <ul>
-        <button
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Home
-        </button>
-        <button
-          onClick={() => {
-            navigate("/products");
-          }}
-        >
-          Products
-        </button>
-        <button
-          onClick={() => {
-            navigate("/cart");
-          }}
-        >
-          Cart
-        </button>
-        <button onClick={handleLogout}>Logout</button>
-      </ul>
+    <nav className="navbar">
+      <div className="nav-left">
+        {/* Adjust the path if needed */}
+        <img src= {logo} alt="Logo" className="logo" />
+        <span className="brand-name">Grow</span>
+      </div>
+      <div className="nav-center">
+        <input type="text" placeholder="Search..." className="search-input" />
+      </div>
+      <div className="nav-right">
+        <Link to="/login">
+          <button className="nav-btn">Login</button>
+        </Link>
+        <Link to="/register">
+          <button className="nav-btn">Register</button>
+        </Link>
+      </div>
     </nav>
   );
 };
 
-export default Navbar;
+export default Nav;

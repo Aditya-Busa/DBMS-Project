@@ -1,36 +1,22 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router";
-import { apiUrl } from "../config/config";
-
-// This component simply checks
-// if the user is logged in, it navigates to the dashboard
-// else to the login page
+import React from 'react';
+import Nav from '../components/Navbar';
+import '../css/Home.css';
 
 const Home = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/isLoggedIn`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Not logged in");
-        }
-
-        const data = await response.json();
-        console.log(data.message);
-        navigate("/dashboard");
-      } catch (err) {
-        console.log(err);
-        navigate("/login");
-      }
-    };
-    checkStatus();
-  }, []);
-  return <div>HomePage</div>;
+  return (
+    <>
+      <Nav/>
+      <div className="home-container">
+        <h1>All things finance, right here.</h1>
+        <p>Built for a growwing India.</p>
+        <button className="get-started-btn">Get started</button>
+        <div className="cityscape">
+          {/* Replace with an illustration or SVG as needed */}
+          <p> Financial City Illustration</p>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Home;

@@ -10,10 +10,10 @@ const port = 4000;
 // PostgreSQL connection
 // NOTE: use YOUR postgres username and password here
 const pool = new Pool({
-  user: "hamza",
+  user: "postgres",
   host: "localhost",
   database: "ecommerce",
-  password: "hamza",
+  password: "12345678",
   port: 5432,
 });
 

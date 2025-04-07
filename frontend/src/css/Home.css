@@ -1,0 +1,40 @@
+.home-container {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .home-container h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .home-container p {
+    font-size: 1.2rem;
+    color: #6c6c80;
+    margin-bottom: 2rem;
+  }
+  
+  .get-started-btn {
+    background-color: #00b386;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .get-started-btn:hover {
+    background-color: #009e75;
+  }
+  
+  .cityscape {
+    margin-top: 5rem;
+    color: #a0a0b2;
+    font-size: 1.2rem;
+  }
+  
