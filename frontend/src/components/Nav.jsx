@@ -1,14 +1,13 @@
+// src/components/Nav.jsx
 import React from 'react';
 import { Link } from 'react-router';
-import '../css/Navbar.css';
-import logo from './Logo.png'
+import '../css/Nav.css';
 
 const Nav = () => {
   return (
     <nav className="navbar">
       <div className="nav-left">
-        {/* Adjust the path if needed */}
-        <img src= {logo} alt="Logo" className="logo" />
+        <img src="/assets/logo.png" alt="Logo" className="logo" />
         <span className="brand-name">Grow</span>
       </div>
       <div className="nav-center">

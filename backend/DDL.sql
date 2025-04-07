@@ -1,55 +1,318 @@
-DROP TABLE IF EXISTS Users CASCADE;
-DROP TABLE IF EXISTS Products CASCADE;
-DROP TABLE IF EXISTS Orders CASCADE;
-DROP TABLE IF EXISTS OrderItems CASCADE;
-DROP TABLE IF EXISTS Cart CASCADE;
-DROP TABLE IF EXISTS OrderAddress CASCADE;
+-- =============================================
+-- Stock Market Application - Complete Database Schema
+-- =============================================
 
-CREATE TABLE Users (
+-- Core Enum Types
+CREATE TYPE order_type AS ENUM ('market', 'limit', 'stop');
+CREATE TYPE order_status AS ENUM ('pending', 'filled', 'cancelled', 'expired');
+CREATE TYPE transaction_direction AS ENUM ('buy', 'sell');
+CREATE TYPE notification_type AS ENUM (
+    'order_filled',
+    'price_alert',
+    'system',
+    'dividend',
+    'news',
+    'account'
+);
+
+-- ============== CORE TABLES ==============
+
+-- Users Table
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP WITH TIME ZONE,
+    is_active BOOLEAN DEFAULT TRUE,
+    profile_image_url VARCHAR(255),
+    timezone VARCHAR(50) DEFAULT 'UTC'
 );
 
-CREATE TABLE Products (
-    product_id INT PRIMARY KEY,
+-- Stocks Master Table
+CREATE TABLE stocks (
+    stock_id SERIAL PRIMARY KEY,
+    symbol VARCHAR(10) UNIQUE NOT NULL,
+    company_name VARCHAR(255) NOT NULL,
+    current_price DECIMAL(15,4) NOT NULL,
+    price_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    sector VARCHAR(100),
+    industry VARCHAR(100),
+    exchange VARCHAR(50),
+    ipo_date DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    description TEXT,
+    website VARCHAR(255)
+);
+
+-- ============== MARKET DATA ==============
+
+-- Historical Price Data
+CREATE TABLE stock_prices (
+    price_id BIGSERIAL PRIMARY KEY,
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    price DECIMAL(15,4) NOT NULL,
+    volume BIGINT,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    open_price DECIMAL(15,4),
+    high_price DECIMAL(15,4),
+    low_price DECIMAL(15,4),
+    close_price DECIMAL(15,4),
+    CONSTRAINT valid_price CHECK (price > 0)
+);
+
+-- ============== USER HOLDINGS ==============
+
+-- User Stock Holdings (Aggregated View)
+CREATE TABLE user_holdings (
+    holding_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    total_shares DECIMAL(15,4) NOT NULL DEFAULT 0,
+    total_investment DECIMAL(15,4) NOT NULL DEFAULT 0,
+    average_cost_basis DECIMAL(15,4) GENERATED ALWAYS AS (
+        CASE WHEN total_shares = 0 THEN 0 
+        ELSE total_investment / total_shares 
+        END
+    ) STORED,
+    current_value DECIMAL(15,4) GENERATED ALWAYS AS (
+        total_shares * (SELECT current_price FROM stocks WHERE stock_id = user_holdings.stock_id)
+    ) STORED,
+    unrealized_pnl DECIMAL(15,4) GENERATED ALWAYS AS (
+        current_value - total_investment
+    ) STORED,
+    unrealized_pnl_percent DECIMAL(10,4) GENERATED ALWAYS AS (
+        CASE WHEN total_investment = 0 THEN 0 
+        ELSE (current_value - total_investment) / total_investment * 100 
+        END
+    ) STORED,
+    first_purchase_date TIMESTAMP WITH TIME ZONE,
+    last_purchase_date TIMESTAMP WITH TIME ZONE,
+    UNIQUE (user_id, stock_id)
+);
+
+-- ============== TRANSACTION SYSTEM ==============
+
+-- Trade Transactions (Complete Audit Trail)
+CREATE TABLE transactions (
+    transaction_id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    direction transaction_direction NOT NULL,
+    quantity DECIMAL(15,4) NOT NULL,
+    price_per_share DECIMAL(15,4) NOT NULL,
+    commission DECIMAL(15,4) DEFAULT 0,
+    total_amount DECIMAL(15,4) GENERATED ALWAYS AS (
+        quantity * price_per_share + commission
+    ) STORED,
+    transaction_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    CONSTRAINT valid_quantity CHECK (quantity > 0),
+    CONSTRAINT valid_price CHECK (price_per_share > 0)
+);
+
+-- Orders Table
+CREATE TABLE orders (
+    order_id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    type order_type NOT NULL,
+    status order_status DEFAULT 'pending',
+    direction transaction_direction NOT NULL,
+    quantity DECIMAL(15,4) NOT NULL,
+    limit_price DECIMAL(15,4),
+    stop_price DECIMAL(15,4),
+    time_in_force VARCHAR(10) DEFAULT 'GTC', -- GTC, DAY, IOC, FOK
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    filled_quantity DECIMAL(15,4) DEFAULT 0,
+    average_fill_price DECIMAL(15,4),
+    transaction_id BIGINT REFERENCES transactions(transaction_id),
+    CONSTRAINT valid_order_quantity CHECK (quantity > 0),
+    CONSTRAINT valid_limit_price CHECK (
+        (type = 'limit' AND limit_price IS NOT NULL) OR 
+        (type IN ('market', 'stop') AND limit_price IS NULL)
+    )
+);
+
+-- ============== ACCOUNT SYSTEM ==============
+
+-- User Cash Balances
+CREATE TABLE user_balances (
+    user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
+    cash_balance DECIMAL(15,4) NOT NULL DEFAULT 0,
+    buying_power DECIMAL(15,4) GENERATED ALWAYS AS (cash_balance * 1) STORED, -- Can adjust margin here
+    last_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cash Transactions
+CREATE TABLE cash_transactions (
+    transaction_id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    amount DECIMAL(15,4) NOT NULL,
+    transaction_type VARCHAR(20) NOT NULL CHECK (
+        transaction_type IN ('deposit', 'withdrawal', 'dividend', 'interest', 'transfer')
+    ),
+    description TEXT,
+    transaction_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'completed',
+    reference_id VARCHAR(100)
+);
+
+-- ============== WATCHLISTS & ALERTS ==============
+
+-- User Watchlists
+CREATE TABLE watchlists (
+    watchlist_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
     name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    stock_quantity INT NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_default BOOLEAN DEFAULT FALSE,
+    is_public BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE Orders (
-    order_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_amount DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+-- Watchlist Items
+CREATE TABLE watchlist_items (
+    watchlist_id INTEGER NOT NULL REFERENCES watchlists(watchlist_id),
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    PRIMARY KEY (watchlist_id, stock_id)
 );
 
-CREATE TABLE OrderItems (
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE
+-- Price Alerts
+CREATE TABLE price_alerts (
+    alert_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
+    target_price DECIMAL(15,4) NOT NULL,
+    direction VARCHAR(5) CHECK (direction IN ('above', 'below')),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    triggered_at TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT valid_target_price CHECK (target_price > 0)
 );
 
-CREATE TABLE Cart (
-    user_id INT NOT NULL,
-    item_id INT NOT NULL,
-    quantity INT NOT NULL CHECK (quantity > 0),
-    PRIMARY KEY (user_id, item_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES Products(product_id) ON DELETE CASCADE
+-- ============== NOTIFICATION SYSTEM ==============
+
+CREATE TABLE notifications (
+    notification_id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    type notification_type NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_archived BOOLEAN DEFAULT FALSE,
+    related_entity_type VARCHAR(50),  -- 'order', 'stock', 'transaction' etc
+    related_entity_id BIGINT,         -- ID of the related entity
+    metadata JSONB,                   -- Additional structured data
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP WITH TIME ZONE,
+    priority SMALLINT DEFAULT 3       -- 1=urgent, 2=high, 3=normal, 4=low
 );
 
-CREATE TABLE OrderAddress (
-    order_id INTEGER PRIMARY KEY REFERENCES Orders(order_id),
-    street VARCHAR(255) NOT NULL,
-    city VARCHAR(100) NOT NULL,
-    state VARCHAR(100) NOT NULL,
-    pincode CHAR(6) NOT NULL CHECK (pincode ~ '^[0-9]{6}$')  
+-- ============== PERFORMANCE INDEXES ==============
+
+-- Stocks Indexes
+CREATE INDEX idx_stocks_symbol ON stocks(symbol);
+CREATE INDEX idx_stocks_sector ON stocks(sector);
+CREATE INDEX idx_stocks_industry ON stocks(industry);
+
+-- Price History Indexes
+CREATE INDEX idx_stock_prices_stock_id ON stock_prices(stock_id);
+CREATE INDEX idx_stock_prices_timestamp ON stock_prices(timestamp);
+
+-- User Data Indexes
+CREATE INDEX idx_user_holdings_user ON user_holdings(user_id);
+CREATE INDEX idx_user_holdings_stock ON user_holdings(stock_id);
+CREATE INDEX idx_transactions_user ON transactions(user_id);
+CREATE INDEX idx_transactions_stock ON transactions(stock_id);
+CREATE INDEX idx_transactions_time ON transactions(transaction_time);
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_stock ON orders(stock_id);
+
+-- Notification Indexes
+CREATE INDEX idx_notifications_user ON notifications(user_id);
+CREATE INDEX idx_notifications_unread ON notifications(user_id) WHERE is_read = FALSE;
+CREATE INDEX idx_notifications_created ON notifications(created_at);
+
+-- Alert Indexes
+CREATE INDEX idx_price_alerts_user ON price_alerts(user_id);
+CREATE INDEX idx_price_alerts_active ON price_alerts(user_id) WHERE is_active = TRUE;
+
+-- ============== AUDIT & SYSTEM TABLES ==============
+
+-- Schema Migrations
+CREATE TABLE migrations (
+    migration_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    executed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- System Events Log
+CREATE TABLE event_log (
+    event_id BIGSERIAL PRIMARY KEY,
+    event_type VARCHAR(50) NOT NULL,
+    user_id INTEGER REFERENCES users(user_id),
+    entity_type VARCHAR(50),
+    entity_id INTEGER,
+    description TEXT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User Preferences
+CREATE TABLE user_preferences (
+    user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
+    language VARCHAR(10) DEFAULT 'en',
+    theme VARCHAR(20) DEFAULT 'light',
+    notification_enabled BOOLEAN DEFAULT TRUE,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    push_notifications BOOLEAN DEFAULT FALSE,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============== VIEWS ==============
+
+-- Portfolio Summary View
+CREATE VIEW portfolio_summary AS
+SELECT 
+    u.user_id,
+    COUNT(uh.stock_id) AS total_holdings,
+    SUM(uh.current_value) AS portfolio_value,
+    SUM(uh.unrealized_pnl) AS total_pnl,
+    ub.cash_balance,
+    (SUM(uh.current_value) + ub.cash_balance) AS net_worth
+FROM 
+    users u
+LEFT JOIN 
+    user_holdings uh ON u.user_id = uh.user_id
+LEFT JOIN 
+    user_balances ub ON u.user_id = ub.user_id
+GROUP BY 
+    u.user_id, ub.cash_balance;
+
+-- Recent Activity View
+CREATE VIEW user_activity AS
+SELECT 
+    user_id,
+    'transaction' AS activity_type,
+    transaction_time AS activity_time,
+    CONCAT(direction, ' ', quantity, ' shares of ', 
+          (SELECT symbol FROM stocks WHERE stock_id = t.stock_id)) AS description
+FROM 
+    transactions t
+UNION ALL
+SELECT 
+    user_id,
+    'order' AS activity_type,
+    created_at AS activity_time,
+    CONCAT(direction, ' ', quantity, ' shares of ', 
+          (SELECT symbol FROM stocks WHERE stock_id = o.stock_id), ' (', status, ')') AS description
+FROM 
+    orders o
+ORDER BY 
+    activity_time DESC;
