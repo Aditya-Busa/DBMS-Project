@@ -1,8 +1,14 @@
 -- =============================================
--- Stock Market Application - Complete Database Schema
+-- Stock Market Application - Complete Database Schema (with DROP commands)
 -- =============================================
 
--- Core Enum Types
+-- ==================== DROP ENUM TYPES ====================
+DROP TYPE IF EXISTS order_type CASCADE;
+DROP TYPE IF EXISTS order_status CASCADE;
+DROP TYPE IF EXISTS transaction_direction CASCADE;
+DROP TYPE IF EXISTS notification_type CASCADE;
+
+-- ==================== ENUM TYPES ====================
 CREATE TYPE order_type AS ENUM ('market', 'limit', 'stop');
 CREATE TYPE order_status AS ENUM ('pending', 'filled', 'cancelled', 'expired');
 CREATE TYPE transaction_direction AS ENUM ('buy', 'sell');
@@ -15,22 +21,35 @@ CREATE TYPE notification_type AS ENUM (
     'account'
 );
 
+-- ==================== DROP TABLES ====================
+DROP TABLE IF EXISTS portfolio_summary;
+DROP TABLE IF EXISTS user_activity;
+DROP TABLE IF EXISTS user_preferences;
+DROP TABLE IF EXISTS event_log;
+DROP TABLE IF EXISTS migrations;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS price_alerts;
+DROP TABLE IF EXISTS watchlist_items;
+DROP TABLE IF EXISTS watchlists;
+DROP TABLE IF EXISTS cash_transactions;
+DROP TABLE IF EXISTS user_balances;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS user_holdings;
+DROP TABLE IF EXISTS stock_prices;
+DROP TABLE IF EXISTS stocks;
+DROP TABLE IF EXISTS users;
+
 -- ============== CORE TABLES ==============
 
--- Users Table
 CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP WITH TIME ZONE,
-    is_active BOOLEAN DEFAULT TRUE,
-    profile_image_url VARCHAR(255),
-    timezone VARCHAR(50) DEFAULT 'UTC'
+  user_id SERIAL PRIMARY KEY,
+  username TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP 
 );
 
--- Stocks Master Table
 CREATE TABLE stocks (
     stock_id SERIAL PRIMARY KEY,
     symbol VARCHAR(10) UNIQUE NOT NULL,
@@ -48,7 +67,6 @@ CREATE TABLE stocks (
 
 -- ============== MARKET DATA ==============
 
--- Historical Price Data
 CREATE TABLE stock_prices (
     price_id BIGSERIAL PRIMARY KEY,
     stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
@@ -64,7 +82,6 @@ CREATE TABLE stock_prices (
 
 -- ============== USER HOLDINGS ==============
 
--- User Stock Holdings (Aggregated View)
 CREATE TABLE user_holdings (
     holding_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -94,7 +111,6 @@ CREATE TABLE user_holdings (
 
 -- ============== TRANSACTION SYSTEM ==============
 
--- Trade Transactions (Complete Audit Trail)
 CREATE TABLE transactions (
     transaction_id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -112,7 +128,6 @@ CREATE TABLE transactions (
     CONSTRAINT valid_price CHECK (price_per_share > 0)
 );
 
--- Orders Table
 CREATE TABLE orders (
     order_id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -123,7 +138,7 @@ CREATE TABLE orders (
     quantity DECIMAL(15,4) NOT NULL,
     limit_price DECIMAL(15,4),
     stop_price DECIMAL(15,4),
-    time_in_force VARCHAR(10) DEFAULT 'GTC', -- GTC, DAY, IOC, FOK
+    time_in_force VARCHAR(10) DEFAULT 'GTC',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     filled_quantity DECIMAL(15,4) DEFAULT 0,
@@ -138,15 +153,13 @@ CREATE TABLE orders (
 
 -- ============== ACCOUNT SYSTEM ==============
 
--- User Cash Balances
 CREATE TABLE user_balances (
     user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
     cash_balance DECIMAL(15,4) NOT NULL DEFAULT 0,
-    buying_power DECIMAL(15,4) GENERATED ALWAYS AS (cash_balance * 1) STORED, -- Can adjust margin here
+    buying_power DECIMAL(15,4) GENERATED ALWAYS AS (cash_balance * 1) STORED,
     last_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Cash Transactions
 CREATE TABLE cash_transactions (
     transaction_id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -162,7 +175,6 @@ CREATE TABLE cash_transactions (
 
 -- ============== WATCHLISTS & ALERTS ==============
 
--- User Watchlists
 CREATE TABLE watchlists (
     watchlist_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -172,7 +184,6 @@ CREATE TABLE watchlists (
     is_public BOOLEAN DEFAULT FALSE
 );
 
--- Watchlist Items
 CREATE TABLE watchlist_items (
     watchlist_id INTEGER NOT NULL REFERENCES watchlists(watchlist_id),
     stock_id INTEGER NOT NULL REFERENCES stocks(stock_id),
@@ -181,7 +192,6 @@ CREATE TABLE watchlist_items (
     PRIMARY KEY (watchlist_id, stock_id)
 );
 
--- Price Alerts
 CREATE TABLE price_alerts (
     alert_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(user_id),
@@ -204,26 +214,21 @@ CREATE TABLE notifications (
     message TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
     is_archived BOOLEAN DEFAULT FALSE,
-    related_entity_type VARCHAR(50),  -- 'order', 'stock', 'transaction' etc
-    related_entity_id BIGINT,         -- ID of the related entity
-    metadata JSONB,                   -- Additional structured data
+    related_entity_type VARCHAR(50),
+    related_entity_id BIGINT,
+    metadata JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP WITH TIME ZONE,
-    priority SMALLINT DEFAULT 3       -- 1=urgent, 2=high, 3=normal, 4=low
+    priority SMALLINT DEFAULT 3
 );
 
 -- ============== PERFORMANCE INDEXES ==============
 
--- Stocks Indexes
 CREATE INDEX idx_stocks_symbol ON stocks(symbol);
 CREATE INDEX idx_stocks_sector ON stocks(sector);
 CREATE INDEX idx_stocks_industry ON stocks(industry);
-
--- Price History Indexes
 CREATE INDEX idx_stock_prices_stock_id ON stock_prices(stock_id);
 CREATE INDEX idx_stock_prices_timestamp ON stock_prices(timestamp);
-
--- User Data Indexes
 CREATE INDEX idx_user_holdings_user ON user_holdings(user_id);
 CREATE INDEX idx_user_holdings_stock ON user_holdings(stock_id);
 CREATE INDEX idx_transactions_user ON transactions(user_id);
@@ -232,26 +237,20 @@ CREATE INDEX idx_transactions_time ON transactions(transaction_time);
 CREATE INDEX idx_orders_user ON orders(user_id);
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_stock ON orders(stock_id);
-
--- Notification Indexes
 CREATE INDEX idx_notifications_user ON notifications(user_id);
 CREATE INDEX idx_notifications_unread ON notifications(user_id) WHERE is_read = FALSE;
 CREATE INDEX idx_notifications_created ON notifications(created_at);
-
--- Alert Indexes
 CREATE INDEX idx_price_alerts_user ON price_alerts(user_id);
 CREATE INDEX idx_price_alerts_active ON price_alerts(user_id) WHERE is_active = TRUE;
 
 -- ============== AUDIT & SYSTEM TABLES ==============
 
--- Schema Migrations
 CREATE TABLE migrations (
     migration_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     executed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- System Events Log
 CREATE TABLE event_log (
     event_id BIGSERIAL PRIMARY KEY,
     event_type VARCHAR(50) NOT NULL,
@@ -264,7 +263,6 @@ CREATE TABLE event_log (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- User Preferences
 CREATE TABLE user_preferences (
     user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
     language VARCHAR(10) DEFAULT 'en',
@@ -277,7 +275,6 @@ CREATE TABLE user_preferences (
 
 -- ============== VIEWS ==============
 
--- Portfolio Summary View
 CREATE VIEW portfolio_summary AS
 SELECT 
     u.user_id,
@@ -295,7 +292,6 @@ LEFT JOIN
 GROUP BY 
     u.user_id, ub.cash_balance;
 
--- Recent Activity View
 CREATE VIEW user_activity AS
 SELECT 
     user_id,

@@ -1,18 +1,19 @@
+/* eslint-disable no-undef */
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const { Pool } = require("pg");
+
 const app = express();
 const port = 4000;
 
 // PostgreSQL connection
-// NOTE: use YOUR postgres username and password here
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
-  database: "ecommerce",
+  database: "project",
   password: "12345678",
   port: 5432,
 });
@@ -20,8 +21,6 @@ const pool = new Pool({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// CORS: Give permission to localhost:3000 (ie our React app)
-// to use this backend API
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -29,7 +28,6 @@ app.use(
   })
 );
 
-// Session information
 app.use(
   session({
     secret: "your_secret_key",
@@ -39,11 +37,8 @@ app.use(
   })
 );
 
-/////////////////////////////////////////////////////////////
-// Authentication APIs
-// Signup, Login, IsLoggedIn and Logout
-
 // Middleware to check if user is authenticated
+// eslint-disable-next-line no-unused-vars
 function isAuthenticated(req, res, next) {
   if (req.session.userId) {
     return next();
@@ -52,83 +47,94 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-app.post("/signup", async (req, res) => {
+// REGISTER
+app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-
+ 
   try {
-    const existingUser = await pool.query(
-      "SELECT * FROM Users WHERE email = $1;",
-      [email]
-    );
-
-    if (existingUser.rows.length > 0) {
-      return res
-        .status(400)
-        .json({ message: "Error: Email is already registered." });
+    const userExists = await pool.query("SELECT * FROM users WHERE email = $1;", [email]);
+    if (userExists.rows.length > 0) {
+      return res.status(400).json({ message: "Email is already registered." });
     }
+    console.log(req.body);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const now = new Date(); 
 
-    await pool.query(
-      "INSERT INTO Users (username, email, password_hash) VALUES ($1, $2, $3);",
-      [username, email, hashedPassword]
-    );
-
-    const result = await pool.query(
-      "SELECT user_id, username from Users WHERE email = $1;",
-      [email]
-    );
-
+    const insertQuery = `
+      INSERT INTO users (username, email, password_hash)
+      VALUES ($1, $2, $3) RETURNING user_id, username;
+    `;
+    const result = await pool.query(insertQuery, [
+      username,
+      email,
+      hashedPassword
+    ]);
+    console.log("hi");
     req.session.userId = result.rows[0].user_id;
     req.session.username = result.rows[0].username;
-    res.status(201).json({ message: "User Registered Successfully" });
+
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    console.error(err);
+    console.error("Registration error:", err);
     res.status(500).json({ message: "Error signing up" });
   }
 });
 
+// LOGIN
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
   try {
-    const result = await pool.query("SELECT * FROM Users WHERE email = $1;", [
-      email,
-    ]);
+    const result = await pool.query("SELECT * FROM users WHERE email = $1;", [email]);
     const user = result.rows[0];
 
-    if (user && (await bcrypt.compare(password, user.password_hash))) {
-      req.session.userId = user.user_id;
-      req.session.username = user.username;
-      res.status(200).json({ message: "Login successful" });
-    } else {
-      res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Update last login timestamp
+    await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = $1", [user.user_id]);
+
+    req.session.userId = user.user_id;
+    req.session.username = user.username;
+
+    res.status(201).json({
+      message: "Login successful",
+      username: user.username,
+      userId: user.user_id,
+    });
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     res.status(500).json({ message: "Error logging in" });
   }
 });
 
-app.get("/isLoggedIn", async (req, res) => {
+// CHECK IF LOGGED IN
+app.get("/isLoggedIn", (req, res) => {
   if (req.session.userId) {
-    res
-      .status(200)
-      .json({ message: "Logged in", username: req.session.username });
+    res.status(201).json({
+      message: "Logged in",
+      username: req.session.username,
+    });
   } else {
-    return res.status(401).json({ message: "Not logged in" });
+    res.status(401).json({ message: "Not logged in" });
   }
 });
 
+// LOGOUT
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) return res.status(500).json({ message: "Failed to log out" });
     res.clearCookie("connect.sid");
-    res.status(200).json({ message: "Logged out successfully" });
+    res.status(201).json({ message: "Logged out successfully" });
   });
 });
 
-
-
-////////////////////////////////////////////////////
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

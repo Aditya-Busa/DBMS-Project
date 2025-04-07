@@ -1,29 +1,42 @@
 // src/pages/Register.jsx
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router'; // fixed import
+import { apiUrl } from "../config/config";
 import '../css/Register.css';
 
 const Register = () => {
-  const [name, setName] = useState('');
+  const [username, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Example auth check (replace with actual check if needed)
+    const isAuthenticated = false;
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Adjust URL if your backend runs elsewhere
-      await axios.post('http://localhost:5000/api/auth/register', {
-        name,
-        email,
-        password,
-      });
-      alert('User registered successfully!');
-      navigate('/login'); // redirect to login page
+        const response = await fetch(`${apiUrl}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ username, email, password })
+        });
+
+      if (response.status === 201) {
+        alert('User registered successfully!');
+        navigate('/login');
+      } else {
+        alert('Registration failed.');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Registration error:', error.response?.data || error.message);
       alert('Registration failed. Check console for details.');
     }
   };
@@ -35,11 +48,10 @@ const Register = () => {
         <input
           type="text"
           placeholder="Full Name"
-          value={name}
+          value={username}
           onChange={(e) => setName(e.target.value)}
           required
         />
-
         <input
           type="email"
           placeholder="Email"
@@ -47,7 +59,6 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-
         <input
           type="password"
           placeholder="Password"
@@ -55,7 +66,6 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <button type="submit" className="register-btn">
           Register
         </button>
