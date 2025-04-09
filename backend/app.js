@@ -58,6 +58,7 @@ app.post("/register", async (req, res) => {
     }
     console.log(req.body);
     const hashedPassword = await bcrypt.hash(password, 10);
+    // eslint-disable-next-line no-unused-vars
     const now = new Date(); 
 
     const insertQuery = `
