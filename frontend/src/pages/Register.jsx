@@ -1,6 +1,5 @@
-// src/pages/Register.jsx
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router'; // fixed import
+import { useNavigate, Link } from 'react-router-dom'; // ✅ FIXED
 import { apiUrl } from "../config/config";
 import '../css/Register.css';
 
@@ -11,23 +10,21 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Example auth check (replace with actual check if needed)
     const isAuthenticated = false;
     if (isAuthenticated) {
       navigate('/');
     }
   }, [navigate]);
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch(`${apiUrl}/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ username, email, password })
-        });
+      const response = await fetch(`${apiUrl}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, email, password })
+      });
 
       if (response.status === 201) {
         alert('User registered successfully!');

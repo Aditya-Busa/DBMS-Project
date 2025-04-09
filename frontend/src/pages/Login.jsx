@@ -1,18 +1,18 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 import { apiUrl } from "../config/config";
 
 const Login = () => {
-  // React hook to navigate to pages in the react app
   const navigate = useNavigate();
 
-  // Form state data and handlerFunction
-  // which handles the change in state of the form
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [error, setError] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,14 +22,6 @@ const Login = () => {
     });
   };
 
-  // Error state data
-  // It is used to display errors (if any)
-  // such as "Invalid Credentials"
-  const [error, setError] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // useEffect checks if the user is already logged in
-  // if already loggedIn then it will simply navigate to the dashboard
   useEffect(() => {
     const checkStatus = async () => {
       try {
@@ -44,15 +36,15 @@ const Login = () => {
 
         const data = await response.json();
         console.log(data.message);
-        navigate("/dashboard");
+        navigate("/stocks/explore");
       } catch (err) {
-        console.log(err);
+        console.log("User not logged in yet");
       }
     };
-    checkStatus();
-  }, [loggedIn]);
 
-  // handler Function to handle the login opertion
+    checkStatus();
+  }, [loggedIn, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -68,13 +60,10 @@ const Login = () => {
       }
 
       setLoggedIn(true);
+      navigate("/stocks/explore");
     } catch (err) {
       console.log(err);
-      if (err.response && err.response.data) {
-        setError(`${err.response.data.message}`);
-      } else {
-        setError(`Error logging in!`);
-      }
+      setError("Error logging in!");
     }
   };
 
@@ -104,9 +93,9 @@ const Login = () => {
 
       <div>
         Don't have an account?{" "}
-        <div className="link" onClick={() => navigate("/signup")}>
+        <Link to="/register" className="link">
           Sign up here
-        </div>
+        </Link>
       </div>
     </div>
   );

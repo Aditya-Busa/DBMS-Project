@@ -11,10 +11,10 @@ const port = 4000;
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: "postgres",
+  user: "test",
   host: "localhost",
   database: "project",
-  password: "12345678",
+  password: "test",
   port: 5432,
 });
 
@@ -96,10 +96,11 @@ app.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
+    
+    
     // Update last login timestamp
-    await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = $1", [user.user_id]);
-
+    await pool.query("UPDATE users SET created_at = CURRENT_TIMESTAMP WHERE user_id = $1", [user.user_id]);
+   
     req.session.userId = user.user_id;
     req.session.username = user.username;
 
@@ -133,6 +134,20 @@ app.post("/logout", (req, res) => {
     res.clearCookie("connect.sid");
     res.status(201).json({ message: "Logged out successfully" });
   });
+});
+
+app.get("/api/stocks/top", async (req, res) => {
+  try {
+    console.log("hi");
+    const result = await pool.query(
+      "SELECT symbol, company_name, current_price FROM Stocks ORDER BY current_price DESC LIMIT 4"
+    );
+    console.log(result);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching top stocks:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 // Start the server
