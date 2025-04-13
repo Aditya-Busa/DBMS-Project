@@ -1,0 +1,11 @@
+/* src/css/Watchlist.css */
+.watchlist-container {
+    padding: 20px;
+  }
+  
+  .watchlist-container .stock-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  

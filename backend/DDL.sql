@@ -1,5 +1,5 @@
 -- Table for Users
-CREATE TABLE Users (
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE Users (
 );
 
 -- Table for Stocks
-CREATE TABLE Stocks (
+CREATE TABLE stocks (
     stock_id SERIAL PRIMARY KEY,
     symbol VARCHAR(10) UNIQUE NOT NULL,
     company_name VARCHAR(100) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE Stocks (
 );
 
 -- Table for Orders
-CREATE TABLE Orders (
+CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     stock_id INT NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE Orders (
 );
 
 -- Table for Holdings
-CREATE TABLE Holdings (
+CREATE TABLE holdings (
     holding_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     stock_id INT NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE Holdings (
 );
 
 -- Table for Transactions
-CREATE TABLE Transactions (
+CREATE TABLE transactions (
     transaction_id SERIAL PRIMARY KEY,
     buy_order_id INT,
     sell_order_id INT,
@@ -54,4 +54,13 @@ CREATE TABLE Transactions (
     FOREIGN KEY (buy_order_id) REFERENCES Orders(order_id),
     FOREIGN KEY (sell_order_id) REFERENCES Orders(order_id),
     FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
+);
+
+CREATE TABLE watchlist (
+  watchlist_id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL,
+  stock_id INT NOT NULL,
+  UNIQUE (user_id, stock_id),
+  FOREIGN KEY (user_id) REFERENCES Users(user_id),
+  FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
 );

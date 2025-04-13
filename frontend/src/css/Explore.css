@@ -173,6 +173,16 @@
     color: #009e75;
   }
   
+  .explore-container {
+    padding: 20px;
+  }
   
+  .stock-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+  }
   
-  
+  .stock-card button {
+    margin-right: 10px;
+  }

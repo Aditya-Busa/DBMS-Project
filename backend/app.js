@@ -140,12 +140,82 @@ app.get("/api/stocks/top", async (req, res) => {
   try {
     console.log("hi");
     const result = await pool.query(
-      "SELECT symbol, company_name, current_price FROM Stocks ORDER BY current_price DESC LIMIT 4"
+      "SELECT stock_id, symbol, company_name, current_price FROM stocks ORDER BY current_price DESC LIMIT 4"
     );
-    console.log(result);
+    console.log(result.rows);
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching top stocks:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.post("/api/stocks/buy", async (req, res) => {
+  const { userId, stockId, quantity } = req.body;
+  try {
+    // 1. Fetch current stock price.
+    const stockResult = await pool.query(
+      'SELECT current_price FROM stocks WHERE stock_id = $1',
+      [stockId]
+    );
+    if (stockResult.rows.length === 0) {
+      return res.status(404).json({ error: "Stock not found" });
+    }
+    let currentPrice = stockResult.rows[0].current_price;
+    
+    // 2. Simulate a price change: for example, increase by 0.1% per unit bought.
+    const newPrice = currentPrice * (1 + (0.001 * quantity));
+    
+    // 3. Insert the buy order into Orders table.
+    await pool.query(
+      "INSERT INTO orders (user_id, stock_id, order_type, quantity, price_per_share) VALUES ($1, $2, 'buy', $3, $4)",
+      [userId, stockId, quantity, currentPrice]
+    );
+    
+    // 4. Update the stock's price in the Stocks table.
+    await pool.query(
+      'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
+      [newPrice, stockId]
+    );
+    
+    res.json({ message: "Buy order executed", newPrice });
+  } catch (err) {
+    console.error("Error executing buy order:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+// GET endpoint to retrieve a user's watchlist stocks
+// Example Express route (Node.js + PostgreSQL)
+app.get("/api/watchlist/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT s.stock_id, s.symbol, s.company_name, s.current_price
+      FROM watchlist w
+      JOIN stocks s ON w.stock_id = s.stock_id
+      WHERE w.user_id = $1
+    `, [userId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch watchlist" });
+  }
+});
+
+
+// POST endpoint to add a stock to the watchlist
+app.post("/api/watchlist/add", async (req, res) => {
+  const { userId, stockId } = req.body;
+  try {
+    
+    await pool.query(
+      'INSERT INTO watchlist (user_id, stock_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+      [userId, stockId]
+    );
+    res.json({ message: "Stock added to watchlist" });
+  } catch (err) {
+    console.error("Error adding to watchlist:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

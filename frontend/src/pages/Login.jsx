@@ -59,6 +59,13 @@ const Login = () => {
         throw new Error("Login failed");
       }
 
+      const data = await response.json();
+      // Save user details to sessionStorage.
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ id: data.userId, username: data.username })
+      );
+
       setLoggedIn(true);
       navigate("/stocks/explore");
     } catch (err) {
