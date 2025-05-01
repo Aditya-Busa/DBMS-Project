@@ -141,11 +141,11 @@ app.post("/logout", (req, res) => {
 
 app.get("/api/stocks/top", async (req, res) => {
   try {
-    console.log("hi");
+    
     const result = await pool.query(
       "SELECT stock_id, symbol, company_name, current_price FROM stocks ORDER BY current_price DESC LIMIT 4"
     );
-    console.log(result.rows);
+    
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching top stocks:", err);
