@@ -47,7 +47,11 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// REGISTER
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
 app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -62,10 +66,19 @@ app.post("/register", async (req, res) => {
       INSERT INTO users (username, email, password_hash)
       VALUES ($1, $2, $3) RETURNING user_id, username;
     `;
+
+    const personalInfoQuery = `
+    INSERT INTO personal_information (user_id)
+    VALUES ($1)
+    RETURNING info_id;
+  `;
+
     const result = await pool.query(insertQuery, [username, email, hashedPassword]);
 
-    req.session.userId = result.rows[0].user_id;
+    const id = result.rows[0].user_id
+    req.session.userId = id;
     req.session.username = result.rows[0].username;
+    const info = await pool.query(personalInfoQuery, [id]);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -153,6 +166,19 @@ app.get("/api/stocks/top", async (req, res) => {
   }
 });
 
+app.get("/api/stocks/search", async (req, res) => {
+  const query = req.query.q?.toLowerCase() || "";
+  try {
+    const result = await pool.query(
+      "SELECT * FROM stocks WHERE LOWER(symbol) LIKE $1 OR LOWER(company_name) LIKE $1",
+      [`%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Search error:", err);
+    res.status(500).json({ error: "Search failed" });
+  }
+});
 
 app.post("/api/stocks/buy", async (req, res) => {
   const { userId, stockId, quantity } = req.body;
@@ -260,8 +286,199 @@ app.delete("/api/watchlist/remove", async (req, res) => {
   }
 });
 
+// GET stock detail
+app.get("/api/stocks/:stockId", async (req, res) => {
+  const { stockId } = req.params;
+  const result = await pool.query(
+    "SELECT stock_id, symbol, company_name, current_price FROM Stocks WHERE stock_id = $1",
+    [stockId]
+  );
+  if (!result.rows.length) return res.status(404).json({ message: "Not found" });
+  res.json(result.rows[0]);
+});
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// GET order book top 3
+app.get("/api/orders/book/:stockId", async (req, res) => {
+  const { stockId } = req.params;
+  // top 3 sell: lowest price first
+  const sell = await pool.query(
+    `SELECT order_id, quantity, price_per_share
+     FROM orders
+     WHERE stock_id=$1 AND status='open' AND order_type='sell'
+     ORDER BY price_per_share ASC, created_at ASC
+     LIMIT 3`, [stockId]
+  );
+  // top 3 buy: highest price first
+  const buy = await pool.query(
+    `SELECT order_id, quantity, price_per_share
+     FROM orders
+     WHERE stock_id=$1 AND status='open' AND order_type='buy'
+     ORDER BY price_per_share DESC, created_at ASC
+     LIMIT 3`, [stockId]
+  );
+  res.json({ sellOrders: sell.rows, buyOrders: buy.rows });
+});
+
+// POST new order
+app.post("/api/orders", async (req, res) => {
+  const { userId, stockId, orderType, quantity, pricePerShare } = req.body;
+  try {
+    const result = await pool.query(
+      `INSERT INTO orders
+         (user_id, stock_id, order_type, quantity, price_per_share)
+       VALUES ($1,$2,$3,$4,$5)
+       RETURNING order_id, status`,
+      [userId, stockId, orderType, quantity, pricePerShare]
+    );
+    res.json({ message: "Order placed", order: result.rows[0] });
+    // Optionally trigger matching logic here...
+  } catch (err) {
+    console.error("Order error", err);
+    res.status(500).json({ message: "Failed to place order" });
+  }
+});
+
+app.post('/api/stocks/buy', async (req, res) => {
+  const { userId, stockId, quantity } = req.body;
+
+  if (!userId || !stockId || !quantity) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  try {
+    // Get the best (lowest price) available sell order for this stock
+    const [sellOrder] = await pool.query(
+      `SELECT * FROM orders
+       WHERE stock_id = $1 AND order_type = 'sell' AND status = 'open'
+       ORDER BY price ASC, created_at ASC LIMIT 1`,
+      [stockId]
+    );
+
+    if (sellOrder.rowCount === 0) {
+      return res.status(404).json({ error: 'No matching sell order found' });
+    }
+
+    const bestSell = sellOrder.rows[0];
+
+    // Determine matched quantity (either full or partial match)
+    const matchedQty = Math.min(quantity, bestSell.quantity);
+
+    // Insert transaction (optional but good for records)
+    await pool.query(
+      `INSERT INTO transactions (buyer_id, seller_id, stock_id, quantity, price, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())`,
+      [userId, bestSell.user_id, stockId, matchedQty, bestSell.price]
+    );
+
+    // Update the stock's current price
+    await pool.query(
+      `UPDATE stocks SET current_price = $1 WHERE id = $2`,
+      [bestSell.price, stockId]
+    );
+
+    // Reduce quantity or close sell order
+    if (matchedQty === bestSell.quantity) {
+      await pool.query(`UPDATE orders SET status = 'filled' WHERE id = $1`, [bestSell.id]);
+    } else {
+      await pool.query(
+        `UPDATE orders SET quantity = quantity - $1 WHERE id = $2`,
+        [matchedQty, bestSell.id]
+      );
+    }
+
+    // Record the buy order as filled
+    await pool.query(
+      `INSERT INTO orders (user_id, stock_id, order_type, quantity, price, status, created_at)
+       VALUES ($1, $2, 'buy', $3, $4, 'filled', NOW())`,
+      [userId, stockId, matchedQty, bestSell.price]
+    );
+
+    res.json({ message: 'Buy order matched', newPrice: bestSell.price });
+
+  } catch (err) {
+    console.error('Error executing buy order:', err);
+    res.status(500).json({ error: 'Server error processing buy order' });
+  }
+});
+
+app.get("/api/profile", isAuthenticated, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT user_id, username, email, phone, dob, pan, gender, marital_status, client_code FROM 
+      personal_information natural join users WHERE users.user_id = $1 and users.user_id = personal_information.user_id`,
+      [req.session.userId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = result.rows[0];
+    res.json({
+      username: user.username,
+      email: user.email,
+      phone: user.phone ? user.phone.replace(/(\d{3})\d{4}(\d{4})/, '*$2') : null,
+      dob: user.dob,
+      pan: user.pan,
+      gender: user.gender,
+      maritalStatus: user.marital_status,
+      clientCode: user.user_id
+    });
+  } catch (err) {
+    console.error("Profile fetch error:", err);
+    res.status(500).json({ message: "Error fetching profile" });
+  }
+});
+
+// UPDATE user profile
+app.put("/api/profile", isAuthenticated, async (req, res) => {
+  const { 
+    phone, 
+    dob, 
+    pan, 
+    gender, 
+    maritalStatus 
+  } = req.body;
+
+  try {
+    const updateQuery = `
+      UPDATE personal_information
+      SET 
+        phone = COALESCE($1, phone),
+        dob = COALESCE($2, dob),
+        pan = COALESCE($3, pan),
+        gender = COALESCE($4, gender),
+        marital_status = COALESCE($5, marital_status)
+      WHERE user_id = $6
+      RETURNING *;
+    `;
+    
+    const result = await pool.query(updateQuery, [
+      phone,
+      dob,
+      pan,
+      gender,
+      maritalStatus,
+      req.session.userId
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const updatedUser = result.rows[0];
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        phone: updatedUser.phone,
+        dob: updatedUser.dob,
+        pan: updatedUser.pan,
+        gender: updatedUser.gender,
+        maritalStatus: updatedUser.marital_status
+      }
+    });
+  } catch (err) {
+    console.error("Profile update error:", err);
+    res.status(500).json({ message: "Error updating profile" });
+  }
 });

@@ -75,7 +75,16 @@ const NavBar = () => {
         <FiBell className="nav-icon" />
         <BsWallet2 className="nav-icon" />
         <FiShoppingCart className="nav-icon" />
-        <div className="user-avatar"></div>
+        
+          <Link
+            to= "/profile"
+            className={`nav-link ${
+            location.pathname.includes("profile") ? "active" : ""
+          }`}
+          >
+          <div className="user-avatar"></div>
+          </Link>
+        
         <FaChevronDown className="dropdown-icon" />
         <button onClick={handleLogout} className="logout-button">
           Logout

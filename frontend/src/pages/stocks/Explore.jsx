@@ -2,91 +2,89 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiUrl } from "../../config/config";
+import NavBar from "../../components/Nav2";
 import "../../css/Explore.css";
 
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [topTradedStocks, setTopTradedStocks] = useState([]);
   const [searchResult, setSearchResult] = useState(null);
+  const [addedWatchlist, setAddedWatchlist] = useState(new Set());
   const navigate = useNavigate();
 
-  // Retrieve the authenticated user's details from sessionStorage.
-  // Updated to use 'id' (assuming login stores user as { id: ..., username: ... })
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
-  const userId = user.id;
+  const userId = user?.id;
 
   useEffect(() => {
-    console.log("I am here");
     fetch(`${apiUrl}/api/stocks/top`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched stocks:", data);
-        setTopTradedStocks(data);
-      })
+      .then((data) => setTopTradedStocks(data))
       .catch((err) => console.error("Failed to fetch stocks", err));
   }, []);
 
-  const handleSearch = () => {
-    const found = topTradedStocks.find(
-      (stock) =>
-        stock.symbol.toLowerCase() === searchQuery.toLowerCase() ||
-        stock.company_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setSearchResult(found || "No stock found");
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      const res = await fetch(`${apiUrl}/api/stocks/search?q=${encodeURIComponent(searchQuery)}`);
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setSearchResult(data);
+      } else {
+        setSearchResult("No stock found");
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+      setSearchResult("Error fetching stocks");
+    }
   };
 
-  // Handler for Buy action.
   const handleBuy = (stockId) => {
     if (!userId) {
       alert("Please log in to buy stocks.");
       return;
     }
+
     const quantity = prompt("Enter quantity to buy:");
-    if (!quantity) return;
-    
+    const parsedQty = parseInt(quantity);
+
+    if (!parsedQty || parsedQty <= 0) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
     fetch(`${apiUrl}/api/stocks/buy`, {
       method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ userId, stockId, quantity: parseInt(quantity) })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, stockId, quantity: parsedQty })
     })
       .then((res) => res.json())
       .then((data) => {
-          alert("Buy order executed. New Price: $" + data.newPrice.toFixed(2));
-          // Optionally, refresh the stock list here if needed.
+        alert("Buy order executed. New Price: $" + data.newPrice.toFixed(2));
       })
       .catch((err) => console.error("Error in buy order", err));
   };
 
-  // Handler for adding a stock to the watchlist.
-  // Handler for adding a stock to the watchlist.
   const addToWatchlist = (stockId) => {
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    if (!user || !user.id) {
+    if (!userId) {
       alert("Please log in to add stocks to your watchlist.");
       return;
     }
-  
-    const userId = user.id; // extract only the integer user ID
-  
-    console.log("User ID:", userId);
-    console.log("Stock ID:", stockId);
-  
+
+    if (addedWatchlist.has(stockId)) {
+      alert("Already added to watchlist.");
+      return;
+    }
+
     fetch(`${apiUrl}/api/watchlist/add`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, stockId })
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.message) {
-          alert(data.message);
-        } else {
-          alert("Failed to add to watchlist.");
-        }
+        alert(data.message || "Failed to add to watchlist.");
+        setAddedWatchlist((prev) => new Set(prev).add(stockId));
       })
       .catch((err) => {
         console.error("Error adding to watchlist", err);
@@ -98,29 +96,43 @@ const Explore = () => {
     try {
       const response = await fetch(`${apiUrl}/logout`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include"
       });
-
       if (!response.ok) throw new Error("Logout failed");
-
-      sessionStorage.removeItem("user"); // Clear local session
+      sessionStorage.removeItem("user");
       navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
 
+  const renderStockCard = (stock) => (
+    <Link
+      to={`/stocks/${stock.stock_id}`}
+      className="stock-card"
+      key={stock.stock_id}
+    >
+      <div className="stock-name">{stock.company_name}</div>
+      <div className="stock-symbol">{stock.symbol}</div>
+      <div className="stock-price">${stock.current_price}</div>
+      <button onClick={(e) => { e.preventDefault(); handleBuy(stock.stock_id); }}>
+        Buy
+      </button>
+      <button
+        disabled={addedWatchlist.has(stock.stock_id)}
+        onClick={(e) => {
+          e.preventDefault();
+          addToWatchlist(stock.stock_id);
+        }}
+      >
+        {addedWatchlist.has(stock.stock_id) ? "Added" : "Add to Watchlist"}
+      </button>
+    </Link>
+  );
+
   return (
     <div className="explore-container">
-      <nav className="navbar">
-        <div className="nav-logo">Grow</div>
-        <div className="nav-links">
-          <Link to="/stocks/explore">Explore</Link>
-          <Link to="/stocks/dashboard">Dashboard</Link>
-          <Link to="/stocks/watchlist">Watchlist</Link>
-          <button onClick={handleLogout} className="logout-button">Logout</button>
-        </div>
-      </nav>
+      <NavBar/>
 
       <h2>Explore Stocks</h2>
 
@@ -134,38 +146,23 @@ const Explore = () => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      {searchResult && (
+      {/* 🔍 Search Results */}
+      {searchResult !== null && (
         <div className="search-result">
+          <h3>Search Results</h3>
           {typeof searchResult === "string" ? (
-            <p>{searchResult}</p>
+            <p className="no-results">{searchResult}</p>
           ) : (
-            <div className="stock-card">
-              <div className="stock-name">{searchResult.company_name}</div>
-              <div className="stock-symbol">{searchResult.symbol}</div>
-              <div className="stock-price">${searchResult.current_price}</div>
-              <button onClick={() => handleBuy(searchResult.stock_id)}>Buy</button>
-              <button onClick={() => addToWatchlist(searchResult.stock_id)}>
-                Add to Watchlist
-              </button>
-            </div>
+            searchResult.map(renderStockCard)
           )}
         </div>
       )}
 
+      {/* 📈 Top 4 Most Traded */}
       <h3 className="top-heading">Top 4 Most Traded Stocks</h3>
       <div className="stock-list">
         {topTradedStocks.length > 0 ? (
-          topTradedStocks.map((stock) => (
-            <div className="stock-card" key={stock.stock_id}>
-              <div className="stock-name">{stock.company_name}</div>
-              <div className="stock-symbol">{stock.symbol}</div>
-              <div className="stock-price">${stock.current_price}</div>
-              <button onClick={() => handleBuy(stock.stock_id)}>Buy</button>
-              <button onClick={() => addToWatchlist(stock.stock_id)}>
-                Add to Watchlist
-              </button>
-            </div>
-          ))
+          topTradedStocks.map(renderStockCard)
         ) : (
           <p>No stocks available.</p>
         )}

@@ -64,3 +64,15 @@ CREATE TABLE watchlist (
   FOREIGN KEY (user_id) REFERENCES Users(user_id),
   FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
 );
+
+CREATE TABLE personal_information (
+    info_id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE NOT NULL,
+    pan VARCHAR(12),
+    dob DATE,
+    gender VARCHAR(10),
+    phone VARCHAR(10),
+    marital_status VARCHAR(20),
+    client_code VARCHAR(20) UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
