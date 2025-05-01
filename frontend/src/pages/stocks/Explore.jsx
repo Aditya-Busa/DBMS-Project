@@ -1,9 +1,8 @@
 // src/pages/stocks/Explore.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { apiUrl } from "../../config/config";
 import "../../css/Explore.css";
-import NavBar from "../../components/Nav2";
 
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,13 +10,19 @@ const Explore = () => {
   const [searchResult, setSearchResult] = useState(null);
   const navigate = useNavigate();
 
+  // Retrieve the authenticated user's details from sessionStorage.
+  // Updated to use 'id' (assuming login stores user as { id: ..., username: ... })
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const userId = user.id;
 
   useEffect(() => {
+    console.log("I am here");
     fetch(`${apiUrl}/api/stocks/top`)
       .then((res) => res.json())
-      .then((data) => setTopTradedStocks(data))
+      .then((data) => {
+        console.log("Fetched stocks:", data);
+        setTopTradedStocks(data);
+      })
       .catch((err) => console.error("Failed to fetch stocks", err));
   }, []);
 
@@ -30,6 +35,7 @@ const Explore = () => {
     setSearchResult(found || "No stock found");
   };
 
+  // Handler for Buy action.
   const handleBuy = (stockId) => {
     if (!userId) {
       alert("Please log in to buy stocks.");
@@ -37,51 +43,84 @@ const Explore = () => {
     }
     const quantity = prompt("Enter quantity to buy:");
     if (!quantity) return;
-
+    
     fetch(`${apiUrl}/api/stocks/buy`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+          "Content-Type": "application/json"
       },
       body: JSON.stringify({ userId, stockId, quantity: parseInt(quantity) })
     })
       .then((res) => res.json())
       .then((data) => {
-        alert("Buy order executed. New Price: $" + data.newPrice.toFixed(2));
+          alert("Buy order executed. New Price: $" + data.newPrice.toFixed(2));
+          // Optionally, refresh the stock list here if needed.
       })
       .catch((err) => console.error("Error in buy order", err));
   };
 
+  // Handler for adding a stock to the watchlist.
+  // Handler for adding a stock to the watchlist.
   const addToWatchlist = (stockId) => {
     const user = JSON.parse(sessionStorage.getItem("user"));
-    if (!user || !user.userId) {
+    if (!user || !user.id) {
       alert("Please log in to add stocks to your watchlist.");
       return;
     }
-
+  
+    const userId = user.id; // extract only the integer user ID
+  
+    console.log("User ID:", userId);
+    console.log("Stock ID:", stockId);
+  
     fetch(`${apiUrl}/api/watchlist/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ userId: user.userId, stockId })
+      body: JSON.stringify({ userId, stockId })
     })
-      .then((res) => {
-        if (res.status === 409) {
-          return res.json().then(data => { throw new Error(data.message); });
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          alert(data.message);
+        } else {
+          alert("Failed to add to watchlist.");
         }
-        return res.json();
       })
-      .then((data) => alert(data.message))
       .catch((err) => {
         console.error("Error adding to watchlist", err);
-        alert(err.message || "Error adding to watchlist");
+        alert("Error adding to watchlist.");
       });
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Logout failed");
+
+      sessionStorage.removeItem("user"); // Clear local session
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
     <div className="explore-container">
-      <NavBar />
+      <nav className="navbar">
+        <div className="nav-logo">Grow</div>
+        <div className="nav-links">
+          <Link to="/stocks/explore">Explore</Link>
+          <Link to="/stocks/dashboard">Dashboard</Link>
+          <Link to="/stocks/watchlist">Watchlist</Link>
+          <button onClick={handleLogout} className="logout-button">Logout</button>
+        </div>
+      </nav>
 
       <h2>Explore Stocks</h2>
 
