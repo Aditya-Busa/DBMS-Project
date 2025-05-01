@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { apiUrl } from "../../config/config";
 import "../../css/Explore.css";
+import NavBar from "../../components/Nav2";
 
 const Watchlist = () => {
   const [watchlist, setWatchlist] = useState([]);
@@ -42,6 +43,8 @@ const Watchlist = () => {
   };
 
   return (
+    <>
+    <NavBar/>
     <div className="explore-container">
       <h2>My Watchlist</h2>
       {watchlist.length === 0 ? (
@@ -64,6 +67,7 @@ const Watchlist = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -1,48 +1,99 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* prevents horizontal scroll if something breaks out */
+}
+
 .navbar {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  min-width: 150px;
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  min-width: 0;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.nav-right {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  min-width: 150px;
+  justify-content: flex-end;
+}
+
+.nav-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #0f9d58;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  background-color: #0c7c44;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-center,
+  .nav-right {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .nav-right {
+    flex-direction: column;
     align-items: center;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background-color: #fff;
   }
-  
-  .nav-left {
-    display: flex;
-    align-items: center;
+
+  .search-input {
+    max-width: 100%;
   }
-  
-  .nav-left .logo {
-    height: 40px;
-  }
-  
-  .nav-left .brand-name {
-    margin-left: 10px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1e1e2f;
-  }
-  
-  .nav-center .search-input {
-    width: 300px;
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    outline: none;
-  }
-  
-  .nav-right .nav-btn {
-    background-color: #00b386;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin-left: 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .nav-right .nav-btn:hover {
-    background-color: #009e75;
-  }
-  
+}

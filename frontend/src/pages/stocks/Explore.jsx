@@ -61,33 +61,38 @@ const Explore = () => {
 
   // Handler for adding a stock to the watchlist.
   // Handler for adding a stock to the watchlist.
-const addToWatchlist = (stockId) => {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-  if (!user || !user.userId) {
-    alert("Please log in to add stocks to your watchlist.");
-    return;
-  }
-
-  fetch(`${apiUrl}/api/watchlist/add`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ userId: user.userId, stockId })
-  })
-    .then((res) => {
-      if (res.status === 409) {
-        return res.json().then(data => { throw new Error(data.message); });
-      }
-      return res.json();
+  const addToWatchlist = (stockId) => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (!user || !user.id) {
+      alert("Please log in to add stocks to your watchlist.");
+      return;
+    }
+  
+    const userId = user.id; // extract only the integer user ID
+  
+    console.log("User ID:", userId);
+    console.log("Stock ID:", stockId);
+  
+    fetch(`${apiUrl}/api/watchlist/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId, stockId })
     })
-    .then((data) => alert(data.message))
-    .catch((err) => {
-      console.error("Error adding to watchlist", err);
-      alert(err.message || "Error adding to watchlist");
-    });
-};
-
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          alert(data.message);
+        } else {
+          alert("Failed to add to watchlist.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error adding to watchlist", err);
+        alert("Error adding to watchlist.");
+      });
+  };
 
   const handleLogout = async () => {
     try {

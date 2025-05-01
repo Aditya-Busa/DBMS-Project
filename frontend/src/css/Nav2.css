@@ -1,0 +1,93 @@
+.groww-navbar {
+    position: fixed;               
+    top: 0;                        
+    left: 0;                       
+    right: 0;                      
+    z-index: 1000;                 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 30px;            /* Reduced padding */
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    font-family: 'Segoe UI', sans-serif;
+    width: 100%;                   
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); 
+    height: 60px;                 /* Explicit height to control total navbar height */
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;                    /* Reduced gap for a more compact look */
+}
+
+.nav-logo {
+    width: 30px;                  /* Reduced size of the logo */
+    height: 30px;
+}
+
+.nav-brand {
+    font-size: 18px;              /* Smaller font size for brand */
+    font-weight: 600;
+    color: #3c3f4a;
+}
+
+.nav-link {
+    font-size: 14px;              /* Smaller font size for links */
+    color: #6b6f7c;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-link.active {
+    color: #00d09c;
+    font-weight: 600;
+}
+
+.nav-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    width: 500px;                /* Reduced width of the search bar */
+}
+
+.search-icon {
+    color: #e9eefd;
+    font-size: 16px;
+}
+
+.search-input {
+    width: 100%;          /* Reduced padding for input */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;                    /* Reduced gap between right side elements */
+}
+
+.nav-icon {
+    font-size: 18px;              /* Smaller icon size */
+    color: #4d4f5c;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 28px;                  /* Reduced size of the user avatar */
+    height: 28px;
+    background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+    border-radius: 50%;
+}
+
+.dropdown-icon {
+    font-size: 12px;              /* Smaller font size for dropdown icon */
+    color: #7d7f85;
+}

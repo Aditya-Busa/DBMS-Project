@@ -1,70 +1,88 @@
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f8f9fa;
-  padding: 2rem;
+/* Reset default margins */
+body, h2, p, form, input, button, div {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.login-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  background-color: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
   color: #333;
 }
 
-.login-form {
+form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  gap: 1rem;
+  gap: 15px;
 }
 
-.login-input {
-  padding: 0.75rem;
-  font-size: 1rem;
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #0077cc;
   outline: none;
 }
 
-.login-button {
-  padding: 0.75rem;
-  background-color: #00b386;
+button[type="submit"] {
+  padding: 12px;
+  background-color: #0077cc;
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s;
 }
 
-.login-button:hover {
-  background-color: #009e75;
-}
-
-.signup-redirect {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #555;
+button[type="submit"]:hover {
+  background-color: #005fa3;
 }
 
 .link {
-  color: #00b386;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 0.3rem;
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .link:hover {
   text-decoration: underline;
 }
 
-.error-msg {
+.login-container .error-message {
   color: red;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.login-container .signup-redirect {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
 }

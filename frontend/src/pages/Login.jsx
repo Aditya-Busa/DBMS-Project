@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiUrl } from "../config/config";
+import '../css/Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
