@@ -50,36 +50,36 @@ function isAuthenticated(req, res, next) {
 // REGISTER
 app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
- 
+
   try {
     const userExists = await pool.query("SELECT * FROM users WHERE email = $1;", [email]);
     if (userExists.rows.length > 0) {
       return res.status(400).json({ message: "Email is already registered." });
     }
-    console.log(req.body);
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // eslint-disable-next-line no-unused-vars
-    const now = new Date(); 
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const insertQuery = `
       INSERT INTO users (username, email, password_hash)
       VALUES ($1, $2, $3) RETURNING user_id, username;
     `;
-    const result = await pool.query(insertQuery, [
-      username,
-      email,
-      hashedPassword
-    ]);
-    console.log("hi");
+    const result = await pool.query(insertQuery, [username, email, hashedPassword]);
+
     req.session.userId = result.rows[0].user_id;
     req.session.username = result.rows[0].username;
 
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: result.rows[0].user_id,
+        username: result.rows[0].username
+      }
+    });
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).json({ message: "Error signing up" });
   }
 });
+
 
 // LOGIN
 app.post("/login", async (req, res) => {
@@ -131,9 +131,11 @@ app.get("/isLoggedIn", (req, res) => {
 // LOGOUT
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {
-    if (err) return res.status(500).json({ message: "Failed to log out" });
+    if (err) {
+      return res.status(500).json({ message: "Logout failed" });
+    }
     res.clearCookie("connect.sid");
-    res.status(201).json({ message: "Logged out successfully" });
+    res.json({ message: "Logged out successfully" });
   });
 });
 
@@ -209,17 +211,55 @@ app.get("/api/watchlist/:userId", async (req, res) => {
 app.post("/api/watchlist/add", async (req, res) => {
   const { userId, stockId } = req.body;
   try {
-    
-    await pool.query(
-      'INSERT INTO watchlist (user_id, stock_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+   // Check if the stock is already in the watchlist
+   const checkQuery = `
+   SELECT * FROM watchlist WHERE user_id = $1 AND stock_id = $2
+ `;
+ const existing = await pool.query(checkQuery, [userId, stockId]);
+
+ if (existing.rows.length > 0) {
+   return res.status(409).json({ message: "Stock already in watchlist" });
+ }
+
+
+ // Insert into watchlist
+ const insertQuery = `
+   INSERT INTO watchlist (user_id, stock_id)
+   VALUES ($1, $2)
+ `;
+ await pool.query(insertQuery, [userId, stockId]);
+ res.status(200).json({ message: "Stock added to watchlist" });
+} catch (err) {
+ console.error("Add to watchlist error:", err);
+ res.status(500).json({ message: "Internal server error" });
+}
+});
+
+// Remove stock from watchlist
+app.delete("/api/watchlist/remove", async (req, res) => {
+  const { userId, stockId } = req.body;
+
+  if (!userId || !stockId) {
+    return res.status(400).json({ message: "Missing userId or stockId" });
+  }
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM watchlist WHERE user_id = $1 AND stock_id = $2 RETURNING *",
       [userId, stockId]
     );
-    res.json({ message: "Stock added to watchlist" });
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Stock not found in watchlist" });
+    }
+
+    res.status(200).json({ message: "Stock removed from watchlist" });
   } catch (err) {
-    console.error("Error adding to watchlist:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error removing from watchlist:", err);
+    res.status(500).json({ message: "Failed to remove stock from watchlist" });
   }
 });
+
 
 // Start the server
 app.listen(port, () => {

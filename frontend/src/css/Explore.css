@@ -186,3 +186,18 @@
   .stock-card button {
     margin-right: 10px;
   }
+
+  .logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .logout-button:hover {
+    background-color: #e60000;
+  }
+  

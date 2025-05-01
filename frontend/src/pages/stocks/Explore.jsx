@@ -60,24 +60,49 @@ const Explore = () => {
   };
 
   // Handler for adding a stock to the watchlist.
-  const addToWatchlist = (stockId) => {
-    if (!userId) {
-      alert("Please log in to add stocks to your watchlist.");
-      return;
-    }
-    
-   console.log("User ID:", userId);
-   console.log("Stock ID:", stockId); // Add this line
-    fetch(`${apiUrl}/api/watchlist/add`, {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ userId, stockId })
+  // Handler for adding a stock to the watchlist.
+const addToWatchlist = (stockId) => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  if (!user || !user.userId) {
+    alert("Please log in to add stocks to your watchlist.");
+    return;
+  }
+
+  fetch(`${apiUrl}/api/watchlist/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ userId: user.userId, stockId })
+  })
+    .then((res) => {
+      if (res.status === 409) {
+        return res.json().then(data => { throw new Error(data.message); });
+      }
+      return res.json();
     })
-      .then((res) => res.json())
-      .then((data) => alert(data.message))
-      .catch((err) => console.error("Error adding to watchlist", err));
+    .then((data) => alert(data.message))
+    .catch((err) => {
+      console.error("Error adding to watchlist", err);
+      alert(err.message || "Error adding to watchlist");
+    });
+};
+
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Logout failed");
+
+      sessionStorage.removeItem("user"); // Clear local session
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -88,6 +113,7 @@ const Explore = () => {
           <Link to="/stocks/explore">Explore</Link>
           <Link to="/stocks/dashboard">Dashboard</Link>
           <Link to="/stocks/watchlist">Watchlist</Link>
+          <button onClick={handleLogout} className="logout-button">Logout</button>
         </div>
       </nav>
 

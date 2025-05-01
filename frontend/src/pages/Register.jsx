@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // ✅ FIXED
+import { useNavigate, Link } from 'react-router-dom';
 import { apiUrl } from "../config/config";
 import '../css/Register.css';
 
@@ -10,9 +10,9 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isAuthenticated = false;
-    if (isAuthenticated) {
-      navigate('/');
+    const user = sessionStorage.getItem("user");
+    if (user) {
+      navigate('/stocks/explore');
     }
   }, [navigate]);
 
@@ -27,13 +27,16 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        alert('User registered successfully!');
-        navigate('/login');
+        const data = await response.json(); // get user from response
+        sessionStorage.setItem("user", JSON.stringify(data.user)); // store in session
+        alert('User registered and logged in successfully!');
+        navigate('/stocks/explore'); // redirect to explore page
       } else {
-        alert('Registration failed.');
+        const errMsg = await response.json();
+        alert(errMsg.message || 'Registration failed.');
       }
     } catch (error) {
-      console.error('Registration error:', error.response?.data || error.message);
+      console.error('Registration error:', error);
       alert('Registration failed. Check console for details.');
     }
   };
