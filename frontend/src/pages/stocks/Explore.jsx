@@ -92,20 +92,6 @@ const Explore = () => {
       });
   };
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/logout`, {
-        method: "POST",
-        credentials: "include"
-      });
-      if (!response.ok) throw new Error("Logout failed");
-      sessionStorage.removeItem("user");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   const renderStockCard = (stock) => (
     <Link
       to={`/stocks/${stock.stock_id}`}

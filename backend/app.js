@@ -11,10 +11,10 @@ const port = 4000;
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: "postgres",
+  user: "test",
   host: "localhost",   
-  database: "dbms_project",
-  password: "Aditya@2005",
+  database: "project",
+  password: "test",
   port: 5432,
 });
 
@@ -721,7 +721,7 @@ async function simulateBotTrading() {
         // 1. Generate random parameters with validation
         const userId = randomInt(1, 20);
         // const stockId = stockIds[randomInt(0, stockIds.length - 1)]; // Random stock
-        const stockId = 7; // NVIDIA (for testing)
+        const stockId = 6; // NVIDIA (for testing)
         
         // 2. Get current price with error handling
         const ltpResult = await pool.query(
@@ -934,4 +934,41 @@ app.post("/api/wallet/withdraw", isAuthenticated, async (req, res) => {
   );
   await pool.query("COMMIT");
   res.json({ message: "Withdrawn" });
+});
+
+app.get("/api/holdings/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT h.stock_id, h.quantity, h.avg_price,
+             s.company_name, s.symbol, s.current_price
+      FROM holdings h
+      JOIN stocks s ON h.stock_id = s.stock_id
+      WHERE h.user_id = $1
+    `, [userId]);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching holdings", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// GET active orders of a user
+app.get("/api/orders/active/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const result = await pool.query(
+      `SELECT o.order_id, o.stock_id, o.order_type, o.quantity, o.price_per_share, s.company_name, s.symbol
+       FROM orders o
+       JOIN stocks s ON o.stock_id = s.stock_id
+       WHERE o.user_id = $1 AND o.status = 'open'
+       ORDER BY o.created_at DESC`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching active orders:", err);
+    res.status(500).send("Error fetching active orders");
+  }
 });
