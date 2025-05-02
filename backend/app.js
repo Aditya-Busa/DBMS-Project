@@ -1017,3 +1017,32 @@ app.post("/api/notifications/read", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Error" });
   }
 });
+
+// Get user's order history
+app.get("/api/history", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT 
+        o.order_id,
+        o.order_type,
+        o.quantity,
+        o.price_per_share,
+        o.created_at,
+        s.symbol AS stock_symbol
+      FROM orders o
+      JOIN stocks s ON o.stock_id = s.stock_id
+      WHERE o.user_id = $1 AND o.status = 'executed'
+      ORDER BY o.created_at DESC
+      `,
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching order history:", err);
+    res.status(500).json({ message: "Error fetching history" });
+  }
+});

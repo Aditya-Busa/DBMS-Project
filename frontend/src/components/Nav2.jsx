@@ -2,10 +2,11 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../css/Nav2.css";
-import { FiBell, FiSearch, FiShoppingCart } from "react-icons/fi";
+import { FiBell } from "react-icons/fi";
 import { BsWallet2 } from "react-icons/bs";
+import { HiOutlineClipboardList } from "react-icons/hi"; 
 import { FaChevronDown } from "react-icons/fa";
-import logo from './Logo.png';
+import logo from "./Logo.png";
 import { apiUrl } from "../config/config";
 
 const NavBar = () => {
@@ -36,25 +37,19 @@ const NavBar = () => {
 
         <Link
           to="/stocks/explore"
-          className={`nav-link ${
-            location.pathname.includes("explore") ? "active" : ""
-          }`}
+          className={`nav-link ${location.pathname.includes("explore") ? "active" : ""}`}
         >
           Explore
         </Link>
         <Link
           to="/stocks/dashboard"
-          className={`nav-link ${
-            location.pathname.includes("dashboard") ? "active" : ""
-          }`}
+          className={`nav-link ${location.pathname.includes("dashboard") ? "active" : ""}`}
         >
           Dashboard
         </Link>
         <Link
           to="/stocks/watchlist"
-          className={`nav-link ${
-            location.pathname.includes("watchlist") ? "active" : ""
-          }`}
+          className={`nav-link ${location.pathname.includes("watchlist") ? "active" : ""}`}
         >
           Watchlist
         </Link>
@@ -62,29 +57,28 @@ const NavBar = () => {
 
       <div className="nav-right">
         <FiBell className="nav-icon" />
-        
-        {/* PREVIOUS CODE <BsWallet2 className="nav-icon" /> */}
 
         <Link
           to="/wallet"
-          className={`nav-link ${
-            location.pathname === "/wallet" ? "active" : ""
-          }`}
+          className={`nav-link ${location.pathname === "/wallet" ? "active" : ""}`}
         >
           <BsWallet2 className="nav-icon" />
         </Link>
 
-        <FiShoppingCart className="nav-icon" />
-        
-          <Link
-            to= "/profile"
-            className={`nav-link ${
-            location.pathname.includes("profile") ? "active" : ""
-          }`}
-          >
+        <Link
+          to="/history"
+          className={`nav-link ${location.pathname === "/history" ? "active" : ""}`}
+        >
+          <HiOutlineClipboardList className="nav-icon" />
+        </Link>
+
+        <Link
+          to="/profile"
+          className={`nav-link ${location.pathname.includes("profile") ? "active" : ""}`}
+        >
           <div className="user-avatar"></div>
-          </Link>
-        
+        </Link>
+
         <FaChevronDown className="dropdown-icon" />
         <button onClick={handleLogout} className="logout-button">
           Logout

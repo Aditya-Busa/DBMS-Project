@@ -1,0 +1,119 @@
+/* Container for the entire history section */
+.history-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    border-radius: 12px;
+  }
+  
+  /* Header */
+  .history-container h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  /* Scrollable list */
+  .history-list {
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Scrollbar styling (optional, modern browsers) */
+  .history-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .history-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+  }
+  
+  /* Individual history card */
+  .history-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .history-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Top row: type and stock symbol */
+  .history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Order type styling */
+  .type {
+    font-weight: bold;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+  
+  /* Color coding based on type */
+  .type.buy {
+    background-color: #e0f8e9;
+    color: #2e8b57;
+  }
+  
+  .type.sell {
+    background-color: #ffe0e0;
+    color: #c0392b;
+  }
+  
+  .type.unknown {
+    background-color: #eee;
+    color: #666;
+  }
+  
+  /* Stock name */
+  .stock-name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  /* Transaction details */
+  .history-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+    color: #333;
+  }
+  
+  /* Timestamp */
+  .timestamp {
+    font-size: 0.85rem;
+    color: #777;
+  }
+  
+
+  .filter-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-controls select,
+  .filter-controls input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
