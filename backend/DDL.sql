@@ -25,6 +25,7 @@ CREATE TABLE stocks (
     company_name VARCHAR(100) NOT NULL,
     current_price NUMERIC(10,2) NOT NULL,
     market VARCHAR(50) NOT NULL
+    count INT DEFAULT 0
 );
 
 -- Table for Orders

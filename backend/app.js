@@ -358,8 +358,8 @@ async function matchSellOrder(sellOrderId, stockId, askPrice, askQuantity, selle
     );
     
     await pool.query(
-      'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
-      [matchedPrice, stockId]
+      'UPDATE stocks SET current_price = $1, count = count + $3 WHERE stock_id = $2',
+      [matchedPrice, stockId, matchedQuantity]
     );
     remainingQuantity -= matchedQuantity;
   }
@@ -411,8 +411,8 @@ async function matchBuyOrder(buyOrderId, stockId, bidPrice, bidQuantity, buyerId
     );
 
     await pool.query(
-      'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
-      [matchedPrice, stockId]
+      'UPDATE stocks SET current_price = $1, count = count + $3 WHERE stock_id = $2',
+      [matchedPrice, stockId, matchedQuantity]
     );
     
     remainingQuantity -= matchedQuantity;
