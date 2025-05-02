@@ -856,7 +856,7 @@ app.get("/api/wallet/balance", isAuthenticated, async (req, res) => {
   res.json({ balance: result.rows[0]?.balance || 0 });
 });
 
-// GET transactions
+// GET wallet_transactions
 app.get("/api/wallet/transactions", isAuthenticated, async (req, res) => {
   const { userId } = req.session;
   const result = await pool.query(
@@ -864,6 +864,33 @@ app.get("/api/wallet/transactions", isAuthenticated, async (req, res) => {
      FROM wallet_transactions
      WHERE user_id = $1
      ORDER BY created_at DESC`,
+    [userId]
+  );
+  res.json({ transactions: result.rows });
+});
+
+// GET transactions
+app.get("/api/transactions", isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const result = await pool.query(
+    `
+    SELECT
+      t.transaction_id,
+      CASE
+        WHEN o.order_id = t.buy_order_id  THEN 'buy'
+        ELSE 'sell'
+      END AS transaction_type,
+      CASE
+        WHEN o.order_id = t.buy_order_id  THEN -(t.quantity * t.price_per_share)
+        ELSE  (t.quantity * t.price_per_share)
+      END AS amount,
+      t.executed_at
+    FROM transactions AS t
+    JOIN orders       AS o
+      ON o.order_id IN (t.buy_order_id, t.sell_order_id)
+    WHERE o.user_id = $1
+    ORDER BY t.executed_at DESC;
+    `,
     [userId]
   );
   res.json({ transactions: result.rows });
