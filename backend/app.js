@@ -11,10 +11,10 @@ const port = 4000;
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: "test",
+  user: "postgres",
   host: "localhost",   
-  database: "project",
-  password: "test",
+  database: "dbms_project",
+  password: "Aditya@2005",
   port: 5432,
 });
 
@@ -746,10 +746,10 @@ async function simulateBotTrading() {
         const orderType = Math.random() < 0.5 ? 'buy' : 'sell';
         const quantity = randomInt(1, 10); // More realistic quantities
         
-        // More realistic price fluctuations (0.1%-2%)
+        // More realistic price fluctuations (1% -2%)
         const priceDelta = orderType === 'sell' 
-          ? randomFloat(-0.02, 0.01) 
-          : randomFloat(-0.01, 0.02);
+          ? randomFloat(-0.01, 0.02) 
+          : randomFloat(-0.02, 0.01);
         
         const pricePerShare = parseFloat((ltp * (1 + priceDelta)).toFixed(2));
 
@@ -793,4 +793,118 @@ function delay(ms) {
 }
 
 // Start bot trading simulation on server start
- simulateBotTrading();
+simulateBotTrading();
+
+app.get("/api/stocks/candlestick/:stockId", async (req, res) => {
+  const stockId = req.params.stockId;
+
+  try {
+    const result = await pool.query(
+      `WITH hourly AS (
+         SELECT
+           DATE_TRUNC('hour', created_at) AS time,
+           MIN(price_per_share) AS low,
+           MAX(price_per_share) AS high
+         FROM orders
+         WHERE stock_id = $1
+           AND status = 'executed'
+           AND created_at >= NOW() - INTERVAL '30 days'
+         GROUP BY DATE_TRUNC('hour', created_at)
+       )
+       SELECT
+         h.time,
+         h.low,
+         h.high,
+         (
+           SELECT price_per_share
+           FROM orders o2
+           WHERE o2.stock_id = $1
+             AND o2.status = 'executed'
+             AND DATE_TRUNC('hour', o2.created_at) = h.time
+           ORDER BY o2.created_at ASC
+           LIMIT 1
+         ) AS open,
+         (
+           SELECT price_per_share
+           FROM orders o3
+           WHERE o3.stock_id = $1
+             AND o3.status = 'executed'
+             AND DATE_TRUNC('hour', o3.created_at) = h.time
+           ORDER BY o3.created_at DESC
+           LIMIT 1
+         ) AS close
+       FROM hourly h
+       ORDER BY h.time DESC;`,
+      [stockId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching candlestick data:", error);
+    res.status(500).json({ message: "Failed to fetch candlestick data" });
+  }
+});
+
+
+// GET wallet balance
+app.get("/api/wallet/balance", isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const result = await pool.query(
+    "SELECT balance FROM users WHERE user_id = $1",
+    [userId]
+  );
+  res.json({ balance: result.rows[0]?.balance || 0 });
+});
+
+// GET transactions
+app.get("/api/wallet/transactions", isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const result = await pool.query(
+    `SELECT transaction_id, transaction_type, amount, created_at
+     FROM wallet_transactions
+     WHERE user_id = $1
+     ORDER BY created_at DESC`,
+    [userId]
+  );
+  res.json({ transactions: result.rows });
+});
+
+// POST deposit
+app.post("/api/wallet/deposit", isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const { amount } = req.body;
+  await pool.query("BEGIN");
+  await pool.query(
+    `UPDATE users SET balance = balance + $1 WHERE user_id = $2`,
+    [amount, userId]
+  );
+  await pool.query(
+    `INSERT INTO wallet_transactions (user_id, transaction_type, amount) VALUES ($1,'deposit',$2)`,
+    [userId, amount]
+  );
+  await pool.query("COMMIT");
+  res.json({ message: "Deposited" });
+});
+
+// POST withdraw
+app.post("/api/wallet/withdraw", isAuthenticated, async (req, res) => {
+  const { userId } = req.session;
+  const { amount } = req.body;
+  const balRes = await pool.query(
+    "SELECT balance FROM users WHERE user_id = $1",
+    [userId]
+  );
+  const balance = parseFloat(balRes.rows[0]?.balance || 0);
+  if (balance < amount) return res.status(400).json({ message: "Insufficient funds" });
+  await pool.query("BEGIN");
+  await pool.query(
+    `UPDATE users SET balance = balance - $1 WHERE user_id = $2`,
+    [amount, userId]
+  );
+  await pool.query(
+    `INSERT INTO wallet_transactions (user_id, transaction_type, amount) VALUES ($1,'withdraw',$2)`,
+    [userId, amount]
+  );
+  await pool.query("COMMIT");
+  res.json({ message: "Withdrawn" });
+});

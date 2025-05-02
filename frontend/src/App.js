@@ -9,6 +9,7 @@ import Dashboard from "./pages/stocks/Dashboard";
 import Watchlist from "./pages/stocks/Watchlist"; // New Watchlist page
 import StockDetail from "./pages/stocks/StockDetail";
 import Profile from "./pages/Profile";
+import Wallet from "./pages/Wallet"; // New wallet page
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/stocks/dashboard" element={<Dashboard />} />
       <Route path="/stocks/watchlist" element={<Watchlist />} />
       <Route path="/stocks/:stockId" element={<StockDetail />} />
+      <Route path="/wallet" element={<Wallet />} />
       <Route path="/profile" element={<Profile />} /> 
     </Routes>
   );

@@ -1,10 +1,21 @@
+-- Drop in reverse dependency order
+DROP TABLE IF EXISTS wallet_transactions;
+DROP TABLE IF EXISTS personal_information;
+DROP TABLE IF EXISTS watchlist;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS holdings;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS stocks;
+DROP TABLE IF EXISTS users;
+
 -- Table for Users
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    balance INT DEFAULT 0
 );
 
 -- Table for Stocks
@@ -26,8 +37,8 @@ CREATE TABLE orders (
     price_per_share NUMERIC(10,2) NOT NULL,
     status VARCHAR(10) DEFAULT 'open' CHECK (status IN ('open', 'executed', 'cancelled')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (stock_id) REFERENCES stocks(stock_id)
 );
 
 -- Table for Holdings
@@ -37,8 +48,8 @@ CREATE TABLE holdings (
     stock_id INT NOT NULL,
     quantity INT NOT NULL,
     avg_price NUMERIC(10,2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (stock_id) REFERENCES stocks(stock_id),
     UNIQUE(user_id, stock_id)
 );
 
@@ -51,20 +62,22 @@ CREATE TABLE transactions (
     quantity INT NOT NULL,
     price_per_share NUMERIC(10,2) NOT NULL,
     executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (buy_order_id) REFERENCES Orders(order_id),
-    FOREIGN KEY (sell_order_id) REFERENCES Orders(order_id),
-    FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
+    FOREIGN KEY (buy_order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (sell_order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (stock_id) REFERENCES stocks(stock_id)
 );
 
+-- Watchlist
 CREATE TABLE watchlist (
   watchlist_id SERIAL PRIMARY KEY,
   user_id INT NOT NULL,
   stock_id INT NOT NULL,
   UNIQUE (user_id, stock_id),
-  FOREIGN KEY (user_id) REFERENCES Users(user_id),
-  FOREIGN KEY (stock_id) REFERENCES Stocks(stock_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (stock_id) REFERENCES stocks(stock_id)
 );
 
+-- Personal Info
 CREATE TABLE personal_information (
     info_id SERIAL PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
@@ -75,4 +88,13 @@ CREATE TABLE personal_information (
     marital_status VARCHAR(20),
     client_code VARCHAR(20) UNIQUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Wallet Transactions
+CREATE TABLE wallet_transactions (
+  transaction_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  transaction_type VARCHAR(10) NOT NULL CHECK (transaction_type IN ('deposit', 'withdraw')),
+  amount NUMERIC(12, 2) NOT NULL CHECK (amount > 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

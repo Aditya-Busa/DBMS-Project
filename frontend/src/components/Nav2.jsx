@@ -73,7 +73,18 @@ const NavBar = () => {
 
       <div className="nav-right">
         <FiBell className="nav-icon" />
-        <BsWallet2 className="nav-icon" />
+        
+        {/* PREVIOUS CODE <BsWallet2 className="nav-icon" /> */}
+
+        <Link
+          to="/wallet"
+          className={`nav-link ${
+            location.pathname === "/wallet" ? "active" : ""
+          }`}
+        >
+          <BsWallet2 className="nav-icon" />
+        </Link>
+
         <FiShoppingCart className="nav-icon" />
         
           <Link
