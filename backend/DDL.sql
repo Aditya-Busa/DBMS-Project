@@ -24,7 +24,7 @@ CREATE TABLE stocks (
     symbol VARCHAR(10) UNIQUE NOT NULL,
     company_name VARCHAR(100) NOT NULL,
     current_price NUMERIC(10,2) NOT NULL,
-    market VARCHAR(50) NOT NULL
+    market VARCHAR(50) NOT NULL,
     count INT DEFAULT 0
 );
 
@@ -99,3 +99,12 @@ CREATE TABLE wallet_transactions (
   amount NUMERIC(12, 2) NOT NULL CHECK (amount > 0),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE notifications (
+    notification_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

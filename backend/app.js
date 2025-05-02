@@ -380,6 +380,13 @@ async function matchSellOrder(sellOrderId, stockId, askPrice, askQuantity, selle
   // }
 }
 
+async function sendNotification(userId, message) {
+  await pool.query(
+    `INSERT INTO notifications (user_id, message) VALUES ($1, $2)`,
+    [userId, message]
+  );
+}
+
 // Helper function to match buy orders with existing sell orders
 async function matchBuyOrder(buyOrderId, stockId, bidPrice, bidQuantity, buyerId) {
   // Get matching sell orders (lowest price first)
@@ -507,6 +514,9 @@ async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, b
       [sellerId, stockId, -quantity, price]
     );
   }
+
+  await sendNotification(buyerId, `Bought ${quantity} shares of stock ${stockId} at ₹${price}`);
+  await sendNotification(sellerId, `Sold ${quantity} shares of stock ${stockId} at ₹${price}`);
 
   // 4. Update the stock's current price
   // await pool.query(
@@ -970,5 +980,40 @@ app.get("/api/orders/active/:userId", async (req, res) => {
   } catch (err) {
     console.error("Error fetching active orders:", err);
     res.status(500).send("Error fetching active orders");
+  }
+});
+
+// Get latest notifications for logged-in user
+app.get("/api/notifications", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    const result = await pool.query(`
+      SELECT notification_id, message, is_read, created_at
+      FROM notifications
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 10
+    `, [userId]);
+
+    res.json({ notifications: result.rows });
+  } catch (err) {
+    console.error("Error fetching notifications:", err);
+    res.status(500).json({ message: "Failed to load notifications" });
+  }
+});
+
+// Mark a notification as read
+app.post("/api/notifications/read", isAuthenticated, async (req, res) => {
+  const { notificationId } = req.body;
+  try {
+    await pool.query(
+      `UPDATE notifications SET is_read = TRUE WHERE notification_id = $1 AND user_id = $2`,
+      [notificationId, req.session.userId]
+    );
+    res.json({ message: "Notification marked as read" });
+  } catch (err) {
+    console.error("Error marking notification as read:", err);
+    res.status(500).json({ message: "Error" });
   }
 });
