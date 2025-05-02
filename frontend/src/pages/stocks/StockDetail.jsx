@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { apiUrl } from "../../config/config";
+import NavBar from "../../components/Nav2";
 import "../../css/Explore.css";
 
 const StockDetail = () => {
@@ -64,6 +65,8 @@ const StockDetail = () => {
   if (!stock) return <p>Loading...</p>;
 
   return (
+    <>
+    <NavBar/>
     <div className="explore-container">
       <h2>{stock.company_name} ({stock.symbol})</h2>
       <p>Last Price: ${stock.current_price}</p>
@@ -115,6 +118,7 @@ const StockDetail = () => {
         <button type="submit">Place Order</button>
       </form>
     </div>
+    </>
   );
 };
 

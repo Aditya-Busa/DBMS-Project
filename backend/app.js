@@ -319,24 +319,220 @@ app.get("/api/orders/book/:stockId", async (req, res) => {
   res.json({ sellOrders: sell.rows, buyOrders: buy.rows });
 });
 
-// POST new order
 app.post("/api/orders", async (req, res) => {
   const { userId, stockId, orderType, quantity, pricePerShare } = req.body;
+  
   try {
-    const result = await pool.query(
+    await pool.query('BEGIN'); // Start transaction
+
+    // 1. Insert the new order
+    const orderResult = await pool.query(
       `INSERT INTO orders
-         (user_id, stock_id, order_type, quantity, price_per_share)
-       VALUES ($1,$2,$3,$4,$5)
+         (user_id, stock_id, order_type, quantity, price_per_share, status)
+       VALUES ($1, $2, $3, $4, $5, 'open')
        RETURNING order_id, status`,
       [userId, stockId, orderType, quantity, pricePerShare]
     );
-    res.json({ message: "Order placed", order: result.rows[0] });
-    // Optionally trigger matching logic here...
+
+    const newOrder = orderResult.rows[0];
+    
+    // 2. Try to match orders
+    if (orderType === 'sell') {
+      await matchSellOrder(newOrder.order_id, stockId, pricePerShare, quantity, userId);
+    } else { // buy order
+      await matchBuyOrder(newOrder.order_id, stockId, pricePerShare, quantity, userId);
+    }
+
+    await pool.query('COMMIT'); // Commit transaction if all succeeds
+    
+    // 3. Get updated order status (might have changed during matching)
+    const updatedOrder = await pool.query(
+      'SELECT * FROM orders WHERE order_id = $1', 
+      [newOrder.order_id]
+    );
+    
+    res.json({ 
+      message: "Order processed", 
+      order: updatedOrder.rows[0] 
+    });
+
   } catch (err) {
+    await pool.query('ROLLBACK'); // Rollback on error
     console.error("Order error", err);
-    res.status(500).json({ message: "Failed to place order" });
+    res.status(500).json({ message: "Failed to process order" });
   }
 });
+
+// Helper function to match sell orders with existing buy orders
+async function matchSellOrder(sellOrderId, stockId, askPrice, askQuantity, sellerId) {
+  // Get matching buy orders (highest price first)
+  const { rows: buyOrders } = await pool.query(
+    `SELECT * FROM orders 
+     WHERE stock_id = $1 AND order_type = 'buy' AND status = 'open'
+       AND price_per_share >= $2
+     ORDER BY price_per_share DESC, created_at ASC`,
+    [stockId, askPrice]
+  );
+
+  let remainingQuantity = askQuantity;
+  
+  for (const buyOrder of buyOrders) {
+    if (remainingQuantity <= 0) break;
+    
+    const matchedQuantity = Math.min(remainingQuantity, buyOrder.quantity);
+    const matchedPrice = buyOrder.price_per_share; // Use buyer's price
+    
+    // Execute the trade
+    await executeTrade(
+      buyOrder.order_id,
+      sellOrderId,
+      stockId,
+      matchedQuantity,
+      matchedPrice,
+      buyOrder.user_id,
+      sellerId
+    );
+    
+    remainingQuantity -= matchedQuantity;
+  }
+
+  // Update sell order status if fully/partially matched
+  if (remainingQuantity < askQuantity) {
+    if (remainingQuantity > 0) {
+      await pool.query(
+        'UPDATE orders SET quantity = $1 WHERE order_id = $2',
+        [remainingQuantity, sellOrderId]
+      );
+    } else {
+      await pool.query(
+        'UPDATE orders SET status = \'executed\' WHERE order_id = $1',
+        [sellOrderId]
+      );
+    }
+  }
+}
+
+// Helper function to match buy orders with existing sell orders
+async function matchBuyOrder(buyOrderId, stockId, bidPrice, bidQuantity, buyerId) {
+  // Get matching sell orders (lowest price first)
+  const { rows: sellOrders } = await pool.query(
+    `SELECT * FROM orders 
+     WHERE stock_id = $1 AND order_type = 'sell' AND status = 'open'
+       AND price_per_share <= $2
+     ORDER BY price_per_share ASC, created_at ASC`,
+    [stockId, bidPrice]
+  );
+
+  let remainingQuantity = bidQuantity;
+  
+  for (const sellOrder of sellOrders) {
+    if (remainingQuantity <= 0) break;
+    
+    const matchedQuantity = Math.min(remainingQuantity, sellOrder.quantity);
+    const matchedPrice = sellOrder.price_per_share; // Use seller's price
+    
+    // Execute the trade
+    await executeTrade(
+      buyOrderId,
+      sellOrder.order_id,
+      stockId,
+      matchedQuantity,
+      matchedPrice,
+      buyerId,
+      sellOrder.user_id
+    );
+    
+    remainingQuantity -= matchedQuantity;
+  }
+
+  // Update buy order status if fully/partially matched
+  if (remainingQuantity < bidQuantity) {
+    if (remainingQuantity > 0) {
+      await pool.query(
+        'UPDATE orders SET quantity = $1 WHERE order_id = $2',
+        [remainingQuantity, buyOrderId]
+      );
+    } else {
+      await pool.query(
+        'UPDATE orders SET status = \'executed\' WHERE order_id = $1',
+        [buyOrderId]
+      );
+    }
+  }
+}
+
+// Helper function to execute a trade between two orders
+async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, buyerId, sellerId) {
+  // 1. Record the transaction
+  await pool.query(
+    `INSERT INTO transactions 
+       (buy_order_id, sell_order_id, stock_id, quantity, price_per_share)
+     VALUES ($1, $2, $3, $4, $5)`,
+    [buyOrderId, sellOrderId, stockId, quantity, price]
+  );
+
+  // 2. Update buyer's holdings - using proper conflict target
+  await pool.query(
+    `INSERT INTO holdings 
+       (user_id, stock_id, quantity, avg_price)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT ON CONSTRAINT holdings_user_id_stock_id_key
+     DO UPDATE SET 
+       quantity = holdings.quantity + EXCLUDED.quantity,
+       avg_price = (holdings.avg_price * holdings.quantity + EXCLUDED.avg_price * EXCLUDED.quantity) / 
+                   (holdings.quantity + EXCLUDED.quantity)`,
+    [buyerId, stockId, quantity, price]
+  );
+
+  // 3. Update seller's holdings
+  await pool.query(
+    `UPDATE holdings SET quantity = quantity - $1
+     WHERE user_id = $2 AND stock_id = $3`,
+    [quantity, sellerId, stockId]
+  );
+
+  // 4. Update the stock's current price
+  await pool.query(
+    'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
+    [price, stockId]
+  );
+
+  // 5. Update the buy order status
+  const buyOrder = await pool.query(
+    'SELECT quantity FROM orders WHERE order_id = $1',
+    [buyOrderId]
+  );
+  
+  if (buyOrder.rows[0].quantity <= quantity) {
+    await pool.query(
+      'UPDATE orders SET status = \'executed\' WHERE order_id = $1',
+      [buyOrderId]
+    );
+  } else {
+    await pool.query(
+      'UPDATE orders SET quantity = quantity - $1 WHERE order_id = $2',
+      [quantity, buyOrderId]
+    );
+  }
+
+  // 6. Update the sell order status
+  const sellOrder = await pool.query(
+    'SELECT quantity FROM orders WHERE order_id = $1',
+    [sellOrderId]
+  );
+  
+  if (sellOrder.rows[0].quantity <= quantity) {
+    await pool.query(
+      'UPDATE orders SET status = \'executed\' WHERE order_id = $1',
+      [sellOrderId]
+    );
+  } else {
+    await pool.query(
+      'UPDATE orders SET quantity = quantity - $1 WHERE order_id = $2',
+      [quantity, sellOrderId]
+    );
+  }
+}
 
 app.post('/api/stocks/buy', async (req, res) => {
   const { userId, stockId, quantity } = req.body;
