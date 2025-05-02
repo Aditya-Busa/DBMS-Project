@@ -11,10 +11,10 @@ const port = 4000;
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: "test",
-  host: "localhost",
-  database: "project",
-  password: "test",
+  user: "postgres",
+  host: "localhost",   
+  database: "dbms_project",
+  password: "Aditya@2005",
   port: 5432,
 });
 
@@ -380,7 +380,8 @@ async function matchSellOrder(sellOrderId, stockId, askPrice, askQuantity, selle
     if (remainingQuantity <= 0) break;
     
     const matchedQuantity = Math.min(remainingQuantity, buyOrder.quantity);
-    const matchedPrice = buyOrder.price_per_share; // Use buyer's price
+    // const matchedPrice = buyOrder.price_per_share; // Use buyer's price
+    const matchedPrice = askPrice // TODO (Using the price which is lower (convention))
     
     // Execute the trade
     await executeTrade(
@@ -392,6 +393,14 @@ async function matchSellOrder(sellOrderId, stockId, askPrice, askQuantity, selle
       buyOrder.user_id,
       sellerId
     );
+
+    //TODO
+    console.log(`Changed current_price to ${matchedPrice}`);
+    await pool.query(
+      'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
+      [matchedPrice, stockId]
+    );
+
     
     remainingQuantity -= matchedQuantity;
   }
@@ -440,6 +449,13 @@ async function matchBuyOrder(buyOrderId, stockId, bidPrice, bidQuantity, buyerId
       matchedPrice,
       buyerId,
       sellOrder.user_id
+    );
+
+    //TODO
+    console.log(`Changed current_price to ${matchedPrice}`);
+    await pool.query(
+      'UPDATE stocks SET current_price = $1 WHERE stock_id = $2',
+      [matchedPrice, stockId]
     );
     
     remainingQuantity -= matchedQuantity;
@@ -678,3 +694,79 @@ app.put("/api/profile", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Error updating profile" });
   }
 });
+
+// TODO EVERYTHING FROM HERE
+
+const axios = require('axios');
+
+// Helper functions
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomFloat = (min, max) => Math.random() * (max - min) + min;
+
+async function simulateBotTrading() {
+  try {
+    // Fetch all available stock IDs at startup
+    const stockResult = await pool.query('SELECT stock_id FROM stocks');
+    const stockIds = stockResult.rows.map(row => row.stock_id);
+
+    if (stockIds.length === 0) {
+      console.error("No stocks found in database.");
+      return;
+    }
+
+    // Start infinite trading simulation loop
+    while (true) {
+      try {
+        const userId = randomInt(1, 20);
+        // const stockId = stockIds[randomInt(0, stockIds.length - 1)];
+        const stockId = 7 // NVIDIA (for testing)
+
+        // Get current price (LTP) for selected stock
+        const ltpResult = await pool.query(
+          'SELECT current_price FROM stocks WHERE stock_id = $1',
+          [stockId]
+        );
+
+        if (ltpResult.rows.length === 0) {
+          console.warn(`Stock ID ${stockId} not found.`);
+          continue;
+        }
+
+        const ltp = parseFloat(ltpResult.rows[0].current_price);
+        const orderType = Math.random() < 0.5 ? 'buy' : 'sell';
+        const quantity = randomInt(1, 2);
+
+        let priceDelta;
+        if (orderType === 'sell') {
+          priceDelta = randomFloat(-0.005, 0.01); // -0.5% to +1%
+        } else {
+          priceDelta = randomFloat(-0.01, 0.005); // -1% to +0.5%
+        }
+
+        const pricePerShare = parseFloat((ltp * (1 + priceDelta)).toFixed(2));
+
+        // Submit order to your API
+        await axios.post('http://localhost:4000/api/orders', {
+          userId,
+          stockId,
+          orderType,
+          quantity,
+          pricePerShare
+        });
+
+        console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare}`);
+
+      } catch (err) {
+        console.error("Bot order error:", err.message);
+      }
+
+      await new Promise(res => setTimeout(res, 1000)); // Wait 1 second
+    }
+
+  } catch (err) {
+    console.error("Error initializing bot trading:", err.message);
+  }
+}
+
+// Start bot trading simulation on server start
+simulateBotTrading();

@@ -13,18 +13,30 @@ const StockDetail = () => {
   const [orderForm, setOrderForm] = useState({ type: "buy", quantity: "", price: "" });
 
   useEffect(() => {
-    // fetch stock info
-    fetch(`${apiUrl}/api/stocks/${stockId}`)
-      .then(res => res.json())
-      .then(setStock);
-    // fetch order book
-    fetch(`${apiUrl}/api/orders/book/${stockId}`)
-      .then(res => res.json())
-      .then(data => {
-        setBuyBook(data.buyOrders);
-        setSellBook(data.sellOrders);
-      });
+    let isMounted = true;
+  
+    const fetchAllData = async () => {
+      const [stockRes, bookRes] = await Promise.all([
+        fetch(`${apiUrl}/api/stocks/${stockId}`).then(res => res.json()),
+        fetch(`${apiUrl}/api/orders/book/${stockId}`).then(res => res.json())
+      ]);
+      if (isMounted) {
+        setStock(stockRes);
+        setBuyBook(bookRes.buyOrders);
+        setSellBook(bookRes.sellOrders);
+      }
+    };
+  
+    fetchAllData(); // initial fetch
+  
+    const interval = setInterval(fetchAllData, 200); // poll every 3 seconds
+  
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [stockId]);
+  
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -57,6 +69,12 @@ const StockDetail = () => {
       const book = await fetch(`${apiUrl}/api/orders/book/${stockId}`).then(r => r.json());
       setBuyBook(book.buyOrders);
       setSellBook(book.sellOrders);
+      
+      // TODO (Stock price wasn't being updated till refresh)
+      fetch(`${apiUrl}/api/stocks/${stockId}`)
+      .then(res => res.json())
+      .then(setStock);
+
     } else {
       alert(data.message || "Error placing order");
     }
