@@ -101,9 +101,6 @@ const Explore = () => {
       <div className="stock-name">{stock.company_name}</div>
       <div className="stock-symbol">{stock.symbol}</div>
       <div className="stock-price">${stock.current_price}</div>
-      <button onClick={(e) => { e.preventDefault(); handleBuy(stock.stock_id); }}>
-        Buy
-      </button>
       <button
         disabled={addedWatchlist.has(stock.stock_id)}
         onClick={(e) => {

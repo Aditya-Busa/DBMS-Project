@@ -19,7 +19,7 @@
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 15px;                    /* Reduced gap for a more compact look */
+    gap: 20px;                    /* Reduced gap for a more compact look */
 }
 
 .nav-logo {
@@ -31,10 +31,11 @@
     font-size: 18px;              /* Smaller font size for brand */
     font-weight: 600;
     color: #3c3f4a;
+    margin-right: 30px;
 }
 
 .nav-link {
-    font-size: 14px;              /* Smaller font size for links */
+    font-size: 16px;              /* Smaller font size for links */
     color: #6b6f7c;
     text-decoration: none;
     font-weight: 500;
@@ -45,39 +46,23 @@
     font-weight: 600;
 }
 
-.nav-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    width: 500px;                /* Reduced width of the search bar */
-}
-
-.search-icon {
-    color: #e9eefd;
-    font-size: 16px;
-}
-
-.search-input {
-    width: 100%;          /* Reduced padding for input */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 30px;                    /* Reduced gap between right side elements */
+    gap: 16px;                    /* Reduced gap between right side elements */
+    margin-left: auto;
 }
 
 .nav-icon {
-    font-size: 18px;              /* Smaller icon size */
+    font-size: 22px;              /* Smaller icon size */
     color: #4d4f5c;
     cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.nav-icon:hover {
+    color: #00d09c;
 }
 
 .user-avatar {

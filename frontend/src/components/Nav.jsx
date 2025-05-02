@@ -1,4 +1,3 @@
-// src/components/Nav.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Nav.css';
@@ -9,11 +8,11 @@ const Nav = () => {
     <nav className="navbar">
       <div className="nav-left">
         <img src={logo} alt="Logo" className="logo" />
-        <span className="brand-name">Grow</span>
+        <span className="brand-name">Groww</span>
       </div>
-      <div className="nav-center">
-        <input type="text" placeholder="Search..." className="search-input" />
-      </div>
+
+      <div style={{ flex: 1 }} /> {/* Spacer to push nav-right to far right */}
+
       <div className="nav-right">
         <Link to="/login">
           <button className="nav-btn">Login</button>

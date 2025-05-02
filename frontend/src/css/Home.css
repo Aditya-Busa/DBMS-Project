@@ -1,40 +1,55 @@
 .home-container {
-    text-align: center;
-    padding: 2rem;
-    margin-top: 3rem;
-  }
-  
-  .home-container h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  
-  .home-container p {
-    font-size: 1.2rem;
-    color: #6c6c80;
-    margin-bottom: 2rem;
-  }
-  
-  .get-started-btn {
-    background-color: #00b386;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .get-started-btn:hover {
-    background-color: #009e75;
-  }
-  
-  .cityscape {
-    margin-top: 5rem;
-    color: #a0a0b2;
-    font-size: 1.2rem;
-  }
-  
+  text-align: center;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.home-container h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.home-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../images/image.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+.home-container p {
+  font-size: 1.4rem;
+  color: #202026;
+  margin-bottom: 2rem;
+}
+
+.get-started-btn {
+margin-top: 20px;
+padding: 12px 24px;
+font-size: 1rem;
+background-color: #00b386;
+color: white;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+z-index: 2;
+position: relative;
+opacity: 0.85;
+}
+
+.get-started-btn:hover {
+  background-color: #038461;
+}
+
+.cityscape {
+  margin-top: 5rem;
+  color: #a0a0b2;
+  font-size: 1.2rem;
+}

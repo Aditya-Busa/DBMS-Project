@@ -60,17 +60,6 @@ const NavBar = () => {
         </Link>
       </div>
 
-      <div className="nav-center">
-        <div className="search-bar">
-          <FiSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search Groww..."
-            className="search-input"
-          />
-        </div>
-      </div>
-
       <div className="nav-right">
         <FiBell className="nav-icon" />
         
