@@ -1,5 +1,6 @@
 // src/pages/stocks/Watchlist.jsx
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../../config/config";
 import "../../css/Explore.css";
 import NavBar from "../../components/Nav2";
@@ -8,6 +9,7 @@ const Watchlist = () => {
   const [watchlist, setWatchlist] = useState([]);
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const userId = user.userId || user.id;
+  const navigate = useNavigate();
 
   const fetchWatchlist = useCallback(() => {
     if (!userId) return;
@@ -44,29 +46,37 @@ const Watchlist = () => {
 
   return (
     <>
-    <NavBar/>
-    <div className="explore-container">
-      <h2>My Watchlist</h2>
-      {watchlist.length === 0 ? (
-        <p>No stocks in your watchlist.</p>
-      ) : (
-        <div className="stock-list">
-          {watchlist.map((stock) => (
-            <div className="stock-card" key={stock.stock_id}>
-              <div className="stock-name">{stock.company_name}</div>
-              <div className="stock-symbol">{stock.symbol}</div>
-              <div className="stock-price">${stock.current_price}</div>
-              <button
-                className="remove-button"
-                onClick={() => removeFromWatchlist(stock.stock_id)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      <NavBar />
+      <div className="explore-container">
+        <h2>My Watchlist</h2>
+        {watchlist.length === 0 ? (
+          <p>No stocks in your watchlist.</p>
+        ) : (
+          <div className="stock-list">
+            {watchlist.map((stock) => (
+              <div className="stock-card" key={stock.stock_id}>
+                {/* Clickable stock info */}
+                <div
+                  className="stock-info"
+                  style={{ cursor: "pointer", flex: 1 }}
+                  onClick={() => navigate(`/stocks/${stock.stock_id}`)}
+                >
+                  <div className="stock-name">{stock.company_name}</div>
+                  <div className="stock-symbol">{stock.symbol}</div>
+                </div>
+
+                {/* Remove Button */}
+                <button
+                  className="remove-button"
+                  onClick={() => removeFromWatchlist(stock.stock_id)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </>
   );
 };
