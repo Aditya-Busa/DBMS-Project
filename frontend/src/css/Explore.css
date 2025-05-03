@@ -2,39 +2,67 @@
 .explore-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-top: 900px;
   text-align: center;
-  margin-top: 1350px; /* Account for fixed navbar */
-  padding: 20px;
+  padding: 30px;
   min-height: calc(100vh - 70px);
   width: 100%;
   box-sizing: border-box;
-  overflow-y: auto; /* Makes the entire container scrollable */
+  background-color: #f5f7fa;
 }
 
 .explore-content {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Page Header */
+.explore-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-/* Headings */
-.explore-container h2 {
+.explore-header h2 {
   font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #333;
+  color: #2d3748;
+  margin-bottom: 10px;
 }
 
-.section-container h3 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin: 1rem 0;
-  color: #333;
-  align-self: flex-start;
+/* Grid Layout */
+.grid-layout {
+  display: grid;
+  grid-template-areas:
+    "most-traded most-traded"
+    "top-gainers top-losers"
+    "dashboard dashboard";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 24px;
+}
+
+.most-traded-section {
+  grid-area: most-traded;
+  align-self: center;
+  display: grid;           /* Ensure this is a grid container */
+  justify-items: center;   /* Align items horizontally at center */
+  align-items: center;   
+}
+
+.top-gainers-section {
+  grid-area: top-gainers;
+}
+
+.top-losers-section {
+  grid-area: top-losers;
+  text-align: center; /* Center align losers section */
+}
+
+.dashboard-section {
+  grid-area: dashboard;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 /* Search Bar */
@@ -43,26 +71,34 @@
   justify-content: center;
   width: 100%;
   max-width: 500px;
-  margin-bottom: 1rem;
+  margin: 1rem auto 2rem;
+  position: relative;
 }
 
 .search-bar input {
-  flex: 1;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
   width: 100%;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: 1px solid #e1e5eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
-/* Stock Lists */
-.stock-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  width: 100%; /* Keep full width */
+/* Section Containers */
+.section-container {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.section-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 16px;
+  text-align: center; /* Center all section headers */
 }
 
 /* Stock Cards */
@@ -70,31 +106,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
-  padding: 14px 20px;
+  padding: 16px;
+  margin-bottom: 12px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  min-height: 60px;
-  text-decoration: none;
-  color: inherit;
-  transition: box-shadow 0.2s ease;
-  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #edf2f7;
 }
 
-.stock-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+/* Gainer Cards */
+.gain-card {
+  border-left: 4px solid #0f9d58;
 }
 
+.gain-card .stock-price {
+  color: #0f9d58;
+  font-weight: 500;
+}
+
+.gain-card .stock-percentage-change {
+  color: #0f9d58;
+  font-weight: 500;
+}
+
+/* Loser Cards */
+.loss-card {
+  border-left: 4px solid #db4437;
+  text-align: center; /* Center align loser cards */
+}
+
+.loss-card .stock-price {
+  color: #db4437;
+  font-weight: 500;
+}
+
+.loss-card .stock-percentage-change {
+  color: #db4437;
+  font-weight: 500; /* Bolder font for percentage change */
+}
+
+/* Card Elements */
 .stock-name {
   font-size: 1rem;
   font-weight: 600;
   color: #333;
-  width: 35%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  width: 30%;
+  text-align: left;
 }
 
 .stock-symbol {
@@ -107,88 +163,73 @@
 .stock-price {
   font-size: 1rem;
   font-weight: 500;
-  color: #0f9d58;
   width: 20%;
   text-align: center;
 }
 
-.stock-trade-count {
-  font-size: 0.9rem;
-  color: #666;
+.stock-percentage-change {
   width: 15%;
   text-align: center;
-}
-
-/* Buttons */
-.stock-card button {
-  background-color: #00b386;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  height: 32px;
-  width: 120px;
-  white-space: nowrap;
 }
 
-.stock-card button:hover:not(:disabled) {
-  background-color: #009e75;
-}
-
-.stock-card button:disabled {
-  background-color: #cccccc;
-  cursor: default;
-}
-
+/* Button Group */
 .button-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 16px;
   justify-content: center;
   width: 100%;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .dashboard-btn {
-  background-color: #009e75;
+  padding: 12px 24px;
+  background: #00b386;
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  min-width: 180px;
+  text-align: center;
+  transition: all 0.2s ease;
 }
 
-.dashboard-btn:hover {
-  background-color: #00b386;
-}
-
-/* Responsive Adjustments */
+/* Responsive */
 @media (max-width: 768px) {
-  .explore-container {
-    padding: 15px;
-    margin-top: 60px;
+  .grid-layout {
+    grid-template-areas:
+      "most-traded"
+      "top-gainers"
+      "top-losers"
+      "dashboard";
+    grid-template-columns: 1fr;
   }
   
   .stock-card {
     flex-direction: column;
-    height: auto;
-    padding: 15px;
-    gap: 10px;
+    text-align: center;
+    gap: 8px;
   }
   
   .stock-name,
   .stock-symbol,
   .stock-price,
-  .stock-trade-count {
+  .stock-percentage-change {
     width: 100%;
     text-align: center;
   }
   
   .button-group {
     flex-direction: column;
+    align-items: center;
+  }
+  
+  .dashboard-btn {
+    width: 100%;
+    max-width: 300px;
   }
 }

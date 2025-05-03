@@ -15,7 +15,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    balance NUMERIC(10,2) DEFAULT 0.00
+    balance NUMERIC(15,2) DEFAULT 0.00
 );
 
 -- Table for Stocks
@@ -23,7 +23,7 @@ CREATE TABLE stocks (
     stock_id SERIAL PRIMARY KEY,
     symbol VARCHAR(10) UNIQUE NOT NULL,
     company_name VARCHAR(100) NOT NULL,
-    current_price NUMERIC(10,2) NOT NULL,
+    current_price NUMERIC(15,2) NOT NULL,
     market VARCHAR(50) NOT NULL,
     count INT DEFAULT 0
 );
@@ -35,7 +35,7 @@ CREATE TABLE orders (
     stock_id INT NOT NULL,
     order_type VARCHAR(4) CHECK (order_type IN ('buy', 'sell')) NOT NULL,
     quantity INT NOT NULL,
-    price_per_share NUMERIC(10,2) NOT NULL,
+    price_per_share NUMERIC(15,2) NOT NULL,
     status VARCHAR(10) DEFAULT 'open' CHECK (status IN ('open', 'executed', 'cancelled')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
@@ -48,7 +48,7 @@ CREATE TABLE holdings (
     user_id INT NOT NULL,
     stock_id INT NOT NULL,
     quantity INT NOT NULL,
-    avg_price NUMERIC(10,2) NOT NULL,
+    avg_price NUMERIC(15,2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (stock_id) REFERENCES stocks(stock_id),
     UNIQUE(user_id, stock_id)
@@ -61,7 +61,7 @@ CREATE TABLE transactions (
     sell_order_id INT,
     stock_id INT NOT NULL,
     quantity INT NOT NULL,
-    price_per_share NUMERIC(10,2) NOT NULL,
+    price_per_share NUMERIC(15,2) NOT NULL,
     executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (buy_order_id) REFERENCES orders(order_id),
     FOREIGN KEY (sell_order_id) REFERENCES orders(order_id),
@@ -96,7 +96,7 @@ CREATE TABLE wallet_transactions (
   transaction_id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
   transaction_type VARCHAR(10) NOT NULL CHECK (transaction_type IN ('deposit', 'withdraw')),
-  amount NUMERIC(12, 2) NOT NULL CHECK (amount > 0),
+  amount NUMERIC(15, 2) NOT NULL CHECK (amount > 0),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -112,7 +112,7 @@ CREATE TABLE stock_price_history (
   id SERIAL PRIMARY KEY,
   stock_id INT REFERENCES stocks(stock_id),
   price NUMERIC NOT NULL,
-  initial_price NUMERIC,
+  initial_price NUMERIC(15, 2),
   price_history NUMERIC[],
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT unique_stock_id UNIQUE (stock_id)

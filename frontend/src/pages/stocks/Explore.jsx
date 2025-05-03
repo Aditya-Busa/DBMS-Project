@@ -127,6 +127,50 @@ const Explore = () => {
     </Link>
   );
 
+  const renderGainStockCard = (stock) => (
+    <Link
+      to={`/stocks/${stock.stock_id}`}
+      className="stock-card gain card"
+      key={stock.stock_id}
+    >
+      <div className="stock-name">{stock.company_name}</div>
+      <div className="stock-symbol">{stock.symbol}</div>
+      <div className="stock-price">${stock.current_price}</div>
+      <div className="stock-percentage-change">{stock.percentage_change.toFixed(2)} gain</div>
+      <button
+        disabled={addedWatchlist.has(stock.stock_id)}
+        onClick={(e) => {
+          e.preventDefault();
+          addToWatchlist(stock.stock_id);
+        }}
+      >
+        {addedWatchlist.has(stock.stock_id) ? "Added" : "Add to Watchlist"}
+      </button>
+    </Link>
+  );
+
+  const renderLossStockCard = (stock) => (
+    <Link
+      to={`/stocks/${stock.stock_id}`}
+      className="stock-card loss card"
+      key={stock.stock_id}
+    >
+      <div className="stock-name">{stock.company_name}</div>
+      <div className="stock-symbol">{stock.symbol}</div>
+      <div className="stock-price">${stock.current_price}</div>
+      <div className="stock-percentage change">{stock.percentage_change.toFixed(2)} loss</div>
+      <button
+        disabled={addedWatchlist.has(stock.stock_id)}
+        onClick={(e) => {
+          e.preventDefault();
+          addToWatchlist(stock.stock_id);
+        }}
+      >
+        {addedWatchlist.has(stock.stock_id) ? "Added" : "Add to Watchlist"}
+      </button>
+    </Link>
+  );
+
   return (
     <div className="explore-container">
       <NavBar />
@@ -142,42 +186,49 @@ const Explore = () => {
           />
         </div>
   
-        {/* Most Traded Stocks Section */}
-        <div className="section-container">
-          <h3 className="top-heading">
-            {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
-          </h3>
-          <div className="stock-list">
-            {filteredStocks.length > 0 ? (
-              filteredStocks.map(renderStockCard)
-            ) : (
-              <p>No stocks found.</p>
-            )}
+        {/* Grid Layout Sections */}
+        <div className="grid-layout">
+          {/* Top Left - Most Traded */}
+          <div className="most-traded-section section-container">
+            <h3 className="top-heading">
+              {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
+            </h3>
+            <div className="stock-list">
+              {filteredStocks.length > 0 ? (
+                filteredStocks.map(renderStockCard)
+              ) : (
+                <p>No stocks found.</p>
+              )}
+            </div>
           </div>
-        </div>
   
-        {/* Top Gainers and Losers Section */}
-        <div className="section-container">
-          <h3>Top Gainers</h3>
-          <div className="stock-list">
-            {topGainers.map((stock) => renderStockCard(stock))}
+          {/* Top Right - Top Gainers */}
+          <div className="top-gainers-section section-container">
+            <h3>Top Gainers</h3>
+            <div className="stock-list">
+              {topGainers.map((stock) => renderGainStockCard(stock))}
+            </div>
           </div>
-        </div>
   
-        <div className="section-container">
-          <h3>Top Losers</h3>
-          <div className="stock-list">
-            {topLosers.map((stock) => renderStockCard(stock))}
+          {/* Bottom Left - Top Losers */}
+          <div className="bottom-losers-section section-container">
+            <h3>Top Losers</h3>
+            <div className="stock-list">
+              {topLosers.map((stock) => renderLossStockCard(stock))}
+            </div>
           </div>
-        </div>
   
-        <div className="button-group">
-          <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
-            Go to My Dashboard
-          </button>
-          <button className="dashboard-btn" onClick={() => navigate("/stocks/all")}>
-            View All Stocks
-          </button>
+          {/* Bottom Right - Dashboard Buttons */}
+          <div className="dashboard-section">
+            <div className="button-group">
+              <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
+                Go to My Dashboard
+              </button>
+              <button className="dashboard-btn" onClick={() => navigate("/stocks/all")}>
+                View All Stocks
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
