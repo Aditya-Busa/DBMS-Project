@@ -1138,7 +1138,7 @@ async function checkHoldingNotifications() {
   }
 }
 
-async function updateStockPriceHistory() {
+async function updatearrayHistory() {
   try {
     // Get all stocks with their current prices
     const stocks = await pool.query('SELECT stock_id, current_price FROM stocks');
@@ -1183,22 +1183,22 @@ async function updateStockPriceHistory() {
   }
 }
 
-async function updatearrayHistory() {
-  const stocks = await pool.query(`SELECT stock_id, current_price, price_history FROM stocks`);
+async function updateStockPriceHistory() {
+  const stocks = await pool.query(`SELECT stock_id, current_price FROM stocks`);
 
-  for (const stock of stocks.rows) {
-    let history = stock.price_history || [];
-    history.push(stock.current_price);
+  if (stocks.rows.length > 0) {
+    const values = stocks.rows
+      .map(s => `(${s.stock_id}, ${s.current_price})`)
+      .join(', ');
 
-    // Trim to last 50
-    if (history.length > 50) {
-      history = history.slice(history.length - 50);
-    }
-
-    await pool.query(
-      `UPDATE stocks SET price_history = $1 WHERE stock_id = $2`,
-      [history, stock.stock_id]
-    );
+    await pool.query(`
+      INSERT INTO stock_price_history (stock_id, price)
+      VALUES ${values}
+      ON CONFLICT (stock_id)
+      DO UPDATE SET
+        price = EXCLUDED.price,
+        timestamp = CURRENT_TIMESTAMP
+    `);
   }
 }
 
@@ -1243,6 +1243,7 @@ app.get("/api/stocks/top-gainers", async (req, res) => {
              ((s.current_price - sph.initial_price) / sph.initial_price * 100) as percent_change
       FROM stocks s
       JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+      WHERE sph.initial_price > 0  -- Avoid division by zero
       ORDER BY percent_change DESC
       LIMIT 4
     `);
@@ -1261,6 +1262,7 @@ app.get("/api/stocks/top-losers", async (req, res) => {
              ((s.current_price - sph.initial_price) / sph.initial_price * 100) as percent_change
       FROM stocks s
       JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+      WHERE sph.initial_price > 0  -- Avoid division by zero
       ORDER BY percent_change ASC
       LIMIT 4
     `);
