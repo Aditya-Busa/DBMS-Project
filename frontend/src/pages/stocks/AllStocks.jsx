@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../config/config";
 import { Link } from "react-router-dom";
-import "../../css/Explore.css"; // reuse styling
+import "../../css/AllStocks.css";
 import NavBar from "../../components/Nav2";
 
 const AllStocks = () => {
@@ -71,11 +71,11 @@ const AllStocks = () => {
   };
 
   return (
-    <div className="explore-container">
+    <div className="all-container">
       <NavBar />
 
       <h2>All Stocks</h2>
-      
+
       <div className="stock-list">
         {stocks.length > 0 ? (
           stocks.map((stock) => (
