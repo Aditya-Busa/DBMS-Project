@@ -1151,13 +1151,37 @@ async function updateStockPriceHistory() {
   }
 }
 
+async function updatearrayHistory() {
+  const stocks = await pool.query(`SELECT stock_id, current_price, price_history FROM stocks`);
+
+  for (const stock of stocks.rows) {
+    let history = stock.price_history || [];
+    history.push(stock.current_price);
+
+    // Trim to last 50
+    if (history.length > 50) {
+      history = history.slice(history.length - 50);
+    }
+
+    await pool.query(
+      `UPDATE stocks SET price_history = $1 WHERE stock_id = $2`,
+      [history, stock.stock_id]
+    );
+  }
+}
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function monitor() {
      while(true){
         await checkWatchlistNotifications();
         await checkHoldingNotifications();
         await updateStockPriceHistory();
-        await sleep(20000);
+          let x = 4;
+          while(x > 0){
+            updatearrayHistory();
+            await sleep(5000);
+            x = x-1;
+          }
      }
 }
 
