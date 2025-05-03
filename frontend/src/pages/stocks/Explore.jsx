@@ -7,6 +7,8 @@ import "../../css/Explore.css";
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [topTradedStocks, setTopTradedStocks] = useState([]);
+  const [topGainers, setTopGainers] = useState([]);
+  const [topLosers, setTopLosers] = useState([]);
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [addedWatchlist, setAddedWatchlist] = useState(new Set());
   const navigate = useNavigate();
@@ -15,13 +17,10 @@ const Explore = () => {
   const userId = user?.id;
 
   useEffect(() => {
-    let interval;
-  
     const fetchTopStocks = async () => {
       try {
         const res = await fetch(`${apiUrl}/api/stocks/top`);
         const data = await res.json();
-        // Only update if there's no search query active
         if (searchQuery.trim() === "") {
           setTopTradedStocks(data);
         }
@@ -29,14 +28,28 @@ const Explore = () => {
         console.error("Failed to fetch stocks", err);
       }
     };
-  
+
+    const fetchTopGainersAndLosers = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/top-gainers-losers`);
+        const data = await res.json();
+        setTopGainers(data.topGainers);
+        setTopLosers(data.topLosers);
+      } catch (err) {
+        console.error("Failed to fetch top gainers and losers", err);
+      }
+    };
+
     fetchTopStocks(); // Initial fetch
-  
-    // Set interval only if not searching
-    interval = setInterval(fetchTopStocks, 100);
-  
+    fetchTopGainersAndLosers(); // Fetch gainers and losers
+
+    const interval = setInterval(() => {
+      fetchTopStocks();
+      fetchTopGainersAndLosers();
+    }, 100);
+
     return () => clearInterval(interval);
-  }, [searchQuery]); // depend on searchQuery
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!userId) return;
@@ -52,7 +65,6 @@ const Explore = () => {
       });
   }, [userId]);
 
-  // Filter stocks as user types
   useEffect(() => {
     if (!searchQuery.trim()) {
       setFilteredStocks(topTradedStocks);
@@ -118,42 +130,55 @@ const Explore = () => {
   return (
     <div className="explore-container">
       <NavBar />
-      <h2>Explore Stocks</h2>
-
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search for a stock..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-
-      {/* 🔍 Live Filtered Results */}
-      <h3 className="top-heading">
-        {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
-      </h3>
-      <div className="stock-list">
-        {filteredStocks.length > 0 ? (
-          filteredStocks.map(renderStockCard)
-        ) : (
-          <p>No stocks found.</p>
-        )}
-      </div>
-
-      <div className="button-group">
-        <button
-          className="dashboard-btn"
-          onClick={() => navigate("/stocks/dashboard")}
-        >
-          Go to My Dashboard
-        </button>
-        <button
-          className="dashboard-btn"
-          onClick={() => navigate("/stocks/all")}
-        >
-          View All Stocks
-        </button>
+      <div className="explore-content">
+        <h2>Explore Stocks</h2>
+  
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for a stock..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+  
+        {/* Most Traded Stocks Section */}
+        <div className="section-container">
+          <h3 className="top-heading">
+            {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
+          </h3>
+          <div className="stock-list">
+            {filteredStocks.length > 0 ? (
+              filteredStocks.map(renderStockCard)
+            ) : (
+              <p>No stocks found.</p>
+            )}
+          </div>
+        </div>
+  
+        {/* Top Gainers and Losers Section */}
+        <div className="section-container">
+          <h3>Top Gainers</h3>
+          <div className="stock-list">
+            {topGainers.map((stock) => renderStockCard(stock))}
+          </div>
+        </div>
+  
+        <div className="section-container">
+          <h3>Top Losers</h3>
+          <div className="stock-list">
+            {topLosers.map((stock) => renderStockCard(stock))}
+          </div>
+        </div>
+  
+        <div className="button-group">
+          <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
+            Go to My Dashboard
+          </button>
+          <button className="dashboard-btn" onClick={() => navigate("/stocks/all")}>
+            View All Stocks
+          </button>
+        </div>
       </div>
     </div>
   );

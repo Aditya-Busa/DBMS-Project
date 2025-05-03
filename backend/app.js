@@ -1235,41 +1235,36 @@ app.get("/api/stocks/price-history/:stockId", async (req, res) => {
   }
 });
 
-// GET top gainers (stocks with highest percentage increase)
-app.get("/api/stocks/top-gainers", async (req, res) => {
+// Backend API to fetch top gainers and losers
+app.get('/api/top-gainers-losers', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT s.stock_id, s.symbol, s.company_name, s.current_price,
-             ((s.current_price - sph.initial_price) / sph.initial_price * 100) as percent_change
+      SELECT s.stock_id, s.company_name, s.symbol, s.current_price, 
+       sph.initial_price,
+       ((s.current_price - sph.initial_price) / NULLIF(sph.initial_price, 0))::FLOAT * 100 AS percentage_change
+  FROM stocks s
+  JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+  ORDER BY percentage_change DESC
+  LIMIT 4
+    `);
+    
+    const topGainers = result.rows;
+    const losersResult = await pool.query(`
+      SELECT s.stock_id, s.company_name, s.symbol, s.current_price, 
+             sph.initial_price,
+             ((s.current_price - sph.initial_price) / NULLIF(sph.initial_price, 0))::FLOAT * 100 AS percentage_change
       FROM stocks s
       JOIN stock_price_history sph ON s.stock_id = sph.stock_id
-      WHERE sph.initial_price > 0  -- Avoid division by zero
-      ORDER BY percent_change DESC
+      ORDER BY percentage_change ASC
       LIMIT 4
     `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching top gainers:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
-// GET top losers (stocks with highest percentage decrease)
-app.get("/api/stocks/top-losers", async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT s.stock_id, s.symbol, s.company_name, s.current_price,
-             ((s.current_price - sph.initial_price) / sph.initial_price * 100) as percent_change
-      FROM stocks s
-      JOIN stock_price_history sph ON s.stock_id = sph.stock_id
-      WHERE sph.initial_price > 0  -- Avoid division by zero
-      ORDER BY percent_change ASC
-      LIMIT 4
-    `);
-    res.json(result.rows);
+    const topLosers = losersResult.rows;
+    res.json({ topGainers, topLosers });
+    
   } catch (err) {
-    console.error("Error fetching top losers:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error fetching top gainers and losers', err);
+    res.status(500).send('Server Error');
   }
 });
 
