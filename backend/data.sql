@@ -23,26 +23,26 @@ INSERT INTO users (username, password_hash, email, created_at, balance) VALUES
 
 -- Inserting data into Stocks table
 INSERT INTO stocks (symbol, company_name, current_price, market) VALUES
-('AAPL', 'Apple Inc.', 175.50, 'NASDAQ'),
-('MSFT', 'Microsoft Corporation', 310.25, 'NASDAQ'),
-('GOOGL', 'Alphabet Inc.', 135.75, 'NASDAQ'),
-('AMZN', 'Amazon.com Inc.', 145.80, 'NASDAQ'),
-('TSLA', 'Tesla Inc.', 210.30, 'NASDAQ'),
-('META', 'Meta Platforms Inc.', 285.40, 'NASDAQ'),
-('NVDA', 'NVIDIA Corporation', 450.60, 'NASDAQ'),
-('JPM', 'JPMorgan Chase & Co.', 165.35, 'NYSE'),
-('V', 'Visa Inc.', 240.90, 'NYSE'),
-('WMT', 'Walmart Inc.', 155.20, 'NYSE'),
-('PG', 'Procter & Gamble Company', 145.75, 'NYSE'),
-('DIS', 'Walt Disney Company', 95.60, 'NYSE'),
-('NFLX', 'Netflix Inc.', 380.45, 'NASDAQ'),
-('INTC', 'Intel Corporation', 42.80, 'NASDAQ'),
-('AMD', 'Advanced Micro Devices Inc.', 110.25, 'NASDAQ'),
-('BA', 'Boeing Company', 205.70, 'NYSE'),
-('GS', 'Goldman Sachs Group Inc.', 345.90, 'NYSE'),
-('IBM', 'International Business Machines', 135.40, 'NYSE'),
-('CSCO', 'Cisco Systems Inc.', 52.75, 'NASDAQ'),
-('ORCL', 'Oracle Corporation', 105.30, 'NYSE');
+('AAPL', 'Apple Inc.', 175.50, 'NIFTY'),
+('MSFT', 'Microsoft Corporation', 310.25, 'NIFTY'),
+('GOOGL', 'Alphabet Inc.', 135.75, 'NIFTY'),
+('AMZN', 'Amazon.com Inc.', 145.80, 'NIFTY'),
+('TSLA', 'Tesla Inc.', 210.30, 'NIFTY'),
+('META', 'Meta Platforms Inc.', 285.40, 'NIFTY'),
+('NVDA', 'NVIDIA Corporation', 450.60, 'NIFTY'),
+('JPM', 'JPMorgan Chase & Co.', 165.35, 'SENSEX'),
+('V', 'Visa Inc.', 240.90, 'SENSEX'),
+('WMT', 'Walmart Inc.', 155.20, 'SENSEX'),
+('PG', 'Procter & Gamble Company', 145.75, 'SENSEX'),
+('DIS', 'Walt Disney Company', 95.60, 'SENSEX'),
+('NFLX', 'Netflix Inc.', 380.45, 'NIFTY'),
+('INTC', 'Intel Corporation', 42.80, 'NIFTY'),
+('AMD', 'Advanced Micro Devices Inc.', 110.25, 'NIFTY'),
+('BA', 'Boeing Company', 205.70, 'SENSEX'),
+('GS', 'Goldman Sachs Group Inc.', 345.90, 'SENSEX'),
+('IBM', 'International Business Machines', 135.40, 'SENSEX'),
+('CSCO', 'Cisco Systems Inc.', 52.75, 'NIFTY'),
+('ORCL', 'Oracle Corporation', 105.30, 'SENSEX');
 
 -- Inserting data into Orders table
 -- INSERT INTO Orders (user_id, stock_id, order_type, quantity, price_per_share, status, created_at) VALUES

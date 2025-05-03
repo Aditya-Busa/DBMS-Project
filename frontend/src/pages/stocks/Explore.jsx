@@ -11,10 +11,30 @@ const Explore = () => {
   const [topLosers, setTopLosers] = useState([]);
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [addedWatchlist, setAddedWatchlist] = useState(new Set());
+  const [marketPerformance, setMarketPerformance] = useState([]);
+
   const navigate = useNavigate();
 
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const userId = user?.id;
+
+  useEffect(() => {
+    const fetchMarketPerformance = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/market-performance`);
+        const data = await res.json();
+        setMarketPerformance(data);
+        // console.log("Market performance:", data);
+      } catch (err) {
+        console.error("Failed to fetch market performance", err);
+      }
+    };
+
+    fetchMarketPerformance(); // Initial fetch
+
+    const interval = setInterval(fetchMarketPerformance, 1000); // Every 1s
+    return () => clearInterval(interval); // Cleanup
+  }, []);
 
   useEffect(() => {
     const fetchTopStocks = async () => {
@@ -40,8 +60,8 @@ const Explore = () => {
       }
     };
 
-    fetchTopStocks(); // Initial fetch
-    fetchTopGainersAndLosers(); // Fetch gainers and losers
+    fetchTopStocks();
+    fetchTopGainersAndLosers();
 
     const interval = setInterval(() => {
       fetchTopStocks();
@@ -176,7 +196,7 @@ const Explore = () => {
       <NavBar />
       <div className="explore-content">
         <h2>Explore Stocks</h2>
-  
+
         <div className="search-bar">
           <input
             type="text"
@@ -185,10 +205,8 @@ const Explore = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-  
-        {/* Grid Layout Sections */}
+
         <div className="grid-layout">
-          {/* Top Left - Most Traded */}
           <div className="most-traded-section section-container">
             <h3 className="top-heading">
               {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
@@ -201,32 +219,45 @@ const Explore = () => {
               )}
             </div>
           </div>
-  
-          {/* Top Right - Top Gainers */}
+
           <div className="top-gainers-section section-container">
             <h3>Top Gainers</h3>
             <div className="stock-list">
               {topGainers.map((stock) => renderGainStockCard(stock))}
             </div>
           </div>
-  
-          {/* Bottom Left - Top Losers */}
+
           <div className="bottom-losers-section section-container">
             <h3>Top Losers</h3>
             <div className="stock-list">
               {topLosers.map((stock) => renderLossStockCard(stock))}
             </div>
           </div>
-  
-          {/* Bottom Right - Dashboard Buttons */}
-            <div className="button-group">
-              <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
-                Go to My Dashboard
-              </button>
-              <button className="dashboard-btn" onClick={() => navigate("/stocks/all")}>
-                View All Stocks
-              </button>
-            </div>
+
+          <div className="index-performance section-container">
+            <h3>📊 Index Performance</h3>
+            {marketPerformance.length > 0 ? (
+              marketPerformance.map((item) => (
+                <div key={item.market} className="index-row">
+                  <strong>{item.market}:</strong>{" "}
+                  <span style={{ color: item.percentage_change >= 0 ? "green" : "red" }}>
+                    {item.percentage_change.toFixed(2)}%
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p>No data available</p>
+            )}
+          </div>
+
+          <div className="button-group">
+            <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
+              Go to My Dashboard
+            </button>
+            <button className="dashboard-btn" onClick={() => navigate("/stocks/all")}>
+              View All Stocks
+            </button>
+          </div>
         </div>
       </div>
     </div>

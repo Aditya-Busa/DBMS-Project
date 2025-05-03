@@ -794,8 +794,8 @@ async function simulateBotTrading() {
         
         // More realistic price fluctuations (1% -2%)
         const priceDelta = orderType === 'sell' 
-          ? randomFloat(-0.01, 0.02) 
-          : randomFloat(-0.02, 0.01);
+          ? randomFloat(-0.01, 0.05) 
+          : randomFloat(-0.01, 0.05);
         
         const pricePerShare = parseFloat((ltp * (1 + priceDelta)).toFixed(2));
 
@@ -1269,5 +1269,31 @@ app.get('/api/top-gainers-losers', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+app.get('/api/market-performance', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        market,
+        SUM(current_price) AS total_current,
+        SUM(sph.initial_price) AS total_initial
+      FROM stocks s
+      JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+      GROUP BY market
+    `);
+    
+    const performance = result.rows.map(row => ({
+      market: row.market,
+      percentage_change: ((row.total_current - row.total_initial) / row.total_initial) * 100
+    }));
+
+    res.json(performance);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch market performance" });
+  }
+});
+
+
 
 monitor();
