@@ -730,8 +730,8 @@ async function simulateBotTrading() {
       try {
         // 1. Generate random parameters with validation
         const userId = randomInt(1, 20);
-        // const stockId = stockIds[randomInt(0, stockIds.length - 1)]; // Random stock
-        const stockId = 6; // NVIDIA (for testing)
+        const stockId = stockIds[randomInt(0, stockIds.length - 1)]; // Random stock
+        // const stockId = 6; // NVIDIA (for testing)
         
         // 2. Get current price with error handling
         const ltpResult = await pool.query(
@@ -778,7 +778,7 @@ async function simulateBotTrading() {
           quantity,
           pricePerShare
         }, {
-          timeout: 5000 // 5 second timeout
+          timeout: 500 // 5 second timeout
         });
 
         console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare} | Status: ${response.data.message || 'Success'}`);
@@ -788,7 +788,7 @@ async function simulateBotTrading() {
       }
 
       // Randomized delay between 0.5-2 seconds to simulate realistic trading
-      await delay(randomInt(500, 2000));
+      await delay(randomInt(50, 200));
     }
 
   } catch (err) {
@@ -1046,3 +1046,63 @@ app.get("/api/history", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Error fetching history" });
   }
 });
+
+
+async function checkWatchlistNotifications() {
+  const res = await pool.query(`
+    SELECT w.user_id, w.stock_id, s.symbol, s.current_price AS current_price,
+      sp.price AS old_price
+    FROM watchlist w
+    JOIN stocks s ON s.stock_id = w.stock_id
+    JOIN stock_price_history sp ON sp.stock_id = w.stock_id
+  `);
+
+  for (const row of res.rows) {
+    const change = ((row.current_price - row.old_price) / row.old_price) * 100;
+    if (Math.abs(change) >= 2) {
+      const message = `Stock ${row.symbol} has ${change > 0 ? "increased" : "decreased"} by ${change.toFixed(2)}% in the last 20 seconds.`;
+      await sendNotification(row.user_id, message);
+    }
+  }
+}
+
+async function checkHoldingNotifications() {
+  const res = await pool.query(`
+    SELECT p.user_id, p.stock_id, s.symbol, s.current_price AS current_price, p.avg_price
+    FROM holdings p
+    JOIN stocks s ON s.stock_id = p.stock_id
+  `);
+
+  for (const row of res.rows) {
+    const drop = ((row.average_price - row.current_price) / row.average_price) * 100;
+    if (drop >= 2) {
+      const message = `Stock ${row.symbol} in your holdings has dropped by ${drop.toFixed(2)}% from your average price.`;
+      await sendNotification(row.user_id, message);
+    }
+  }
+}
+
+async function updateStockPriceHistory() {
+  const stocks = await pool.query(`SELECT stock_id, current_price FROM stocks`);
+
+  if (stocks.rows.length > 0) {
+    await pool.query(`DELETE FROM stock_price_history`);
+    const values = stocks.rows.map(s => `(${s.stock_id}, ${s.current_price})`).join(', ');
+    await pool.query(`
+      INSERT INTO stock_price_history (stock_id, price)
+      VALUES ${values}
+    `);
+  }
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function monitor() {
+     while(true){
+        await checkWatchlistNotifications();
+        await checkHoldingNotifications();
+        await updateStockPriceHistory();
+        await sleep(20000);
+     }
+}
+
+monitor();

@@ -1,5 +1,5 @@
-// src/components/NavBar.jsx
-import React from "react";
+// src/components/Nav2.jsx
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../css/Nav2.css";
 import { FiBell } from "react-icons/fi";
@@ -12,6 +12,19 @@ import { apiUrl } from "../config/config";
 const NavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+
+  // Fetch notifications on load
+  useEffect(() => {
+    fetch(`${apiUrl}/api/notifications`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setNotifications(data.notifications || []))
+      .catch((err) => console.error("Notification fetch error:", err));
+  }, []);
+
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   const handleLogout = async () => {
     try {
@@ -56,7 +69,13 @@ const NavBar = () => {
       </div>
 
       <div className="nav-right">
-        <FiBell className="nav-icon" />
+        {/* Notification icon */}
+        <div className="nav-icon-wrapper" onClick={() => navigate("/notifications")}>
+          <FiBell className="nav-icon" title="Notifications" />
+          {unreadCount > 0 && (
+            <span className="notification-badge">{unreadCount}</span>
+          )}
+        </div>
 
         <Link
           to="/wallet"

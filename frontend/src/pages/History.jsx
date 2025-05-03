@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../css/History.css";
+import NavBar from "../components/Nav2";
 import { apiUrl } from "../config/config";
 
 const History = () => {
@@ -39,6 +40,8 @@ const History = () => {
   });
 
   return (
+    <>
+    <NavBar/>
     <div className="history-container">
       <h2>Transaction History</h2>
 
@@ -85,6 +88,7 @@ const History = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

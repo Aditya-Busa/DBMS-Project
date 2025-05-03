@@ -108,3 +108,10 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE stock_price_history (
+  id SERIAL PRIMARY KEY,
+  stock_id INT REFERENCES stocks(stock_id),
+  price NUMERIC NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

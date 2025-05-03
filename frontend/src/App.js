@@ -11,6 +11,7 @@ import Watchlist from "./pages/stocks/Watchlist"; // New Watchlist page
 import StockDetail from "./pages/stocks/StockDetail";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet"; // New wallet page
+import Notifications from "./pages/stocks/Notifications"; 
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="/wallet" element={<Wallet />} />
       <Route path="/profile" element={<Profile />} /> 
       <Route path="/history" element={<History />} />
+      <Route path="/notifications" element={<Notifications />} />
     </Routes>
   );
 }
