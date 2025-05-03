@@ -1,4 +1,3 @@
-// ====== src/pages/Wallet.jsx (updated to merge wallet + stock transactions in front-end) ======
 import React, { useEffect, useState } from "react";
 import NavBar from "../components/Nav2";
 import { apiUrl } from "../config/config";
@@ -12,8 +11,6 @@ export default function Wallet() {
 
   const loadData = async () => {
     try {
-    	console.log("reached line 15");
-      // fetch wallet balance, wallet txns, and stock txns separately
       const [balRes, walletRes, stockRes] = await Promise.all([
         fetch(`${apiUrl}/api/wallet/balance`, { credentials: "include" }),
         fetch(`${apiUrl}/api/wallet/transactions`, { credentials: "include" }),
@@ -21,12 +18,9 @@ export default function Wallet() {
       ]);
 
       const balJson = await balRes.json();
-			console.log("REACHED 24");
       const walletJson = await walletRes.json();
-			console.log("REACHED 26");
       const stockJson = await stockRes.json();
 
-			console.log("reached line 29");
       setBalance(balJson.balance || 0);
 
       // normalize stock transactions: compute amount and type
@@ -50,13 +44,9 @@ export default function Wallet() {
       }));
 
       // merge & sort desc by date
-
-			console.log("reached line 54");
-
       const merged = [...walletTx, ...stockTx].sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
-      console.log(merged);
 
       setTransactions(merged);
     } catch (err) {
@@ -66,7 +56,9 @@ export default function Wallet() {
     }
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -104,7 +96,7 @@ export default function Wallet() {
       <div className="wallet-container">
         <h2>Wallet</h2>
         <p className="wallet-balance">
-          <strong>Current Balance:</strong> ₹{balance.toFixed(2)}
+          <strong>Current Balance:</strong> ₹{Number(balance).toFixed(2)}
         </p>
 
         <form className="wallet-form" onSubmit={handleSubmit}>
@@ -143,21 +135,35 @@ export default function Wallet() {
                     <th>Time</th>
                     <th>Type</th>
                     <th>Amount (₹)</th>
+                    <th>Balance (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {txs.map(tx => (
-                    <tr key={tx.transaction_id}>
-                      <td>{new Date(tx.created_at).toLocaleTimeString()}</td>
-                      <td>{tx.transaction_type.charAt(0).toUpperCase() + tx.transaction_type.slice(1)}</td>
-                      <td style={{
-                        color: tx.amount >= 0 ? "green" : "red",
-                        fontWeight: "bold",
-                      }}>
-                        {Math.abs(tx.amount).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
+                  {(() => {
+                    let local_balance = 0;
+                    return [...txs].reverse().map(tx => {
+                      local_balance += tx.amount;
+                      const row = (
+                        <tr key={tx.transaction_id}>
+                          <td>{new Date(tx.created_at).toLocaleTimeString()}</td>
+                          <td>{tx.transaction_type.charAt(0).toUpperCase() + tx.transaction_type.slice(1)}</td>
+                          <td style={{
+                            color: tx.amount >= 0 ? "green" : "red",
+                            fontWeight: "bold",
+                          }}>
+                            {Math.abs(tx.amount).toFixed(2)}
+                          </td>
+                          <td style={{
+                            color: local_balance > 0 ? "green" : "black",
+                            fontWeight: "bold",
+                          }}>
+                            {local_balance.toFixed(2)}
+                          </td>
+                        </tr>
+                      );
+                      return row;
+                    }).reverse(); // re-reverse to show latest first
+                  })()}
                 </tbody>
               </table>
             </div>

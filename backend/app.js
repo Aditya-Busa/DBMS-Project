@@ -290,6 +290,15 @@ app.post("/api/orders", async (req, res) => {
     await pool.query('BEGIN'); // Start transaction
 
     // 1. Insert the new order
+    if(orderType === 'buy'){
+      const balRes = await pool.query(
+        "SELECT balance FROM users WHERE user_id = $1",
+        [userId]
+      );
+      const balance = parseFloat(balRes.rows[0]?.balance || 0);
+      if (balance < pricePerShare*quantity) return res.status(400).json({ message: "Insufficient funds for Buy" });
+    }
+
     const orderResult = await pool.query(
       `INSERT INTO orders
          (user_id, stock_id, order_type, quantity, price_per_share, status)
@@ -559,6 +568,16 @@ async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, b
     );
   }
 
+// 7. Update the balance of the users
+  let Total_amount = parseFloat((price * quantity).toFixed(2));
+  await pool.query(
+    `UPDATE users SET balance = balance - $1 WHERE user_id = $2`,
+    [Total_amount, buyerId]
+  );
+  await pool.query(
+    `UPDATE users SET balance = balance + $1 WHERE user_id = $2`,
+    [Total_amount, sellerId]
+  );
 }
 
 // app.post('/api/stocks/buy', async (req, res) => {

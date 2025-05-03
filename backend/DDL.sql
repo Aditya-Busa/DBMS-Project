@@ -15,7 +15,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    balance INT DEFAULT 0
+    balance NUMERIC(10,2) DEFAULT 0.00
 );
 
 -- Table for Stocks
