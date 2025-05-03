@@ -1139,15 +1139,47 @@ async function checkHoldingNotifications() {
 }
 
 async function updateStockPriceHistory() {
-  const stocks = await pool.query(`SELECT stock_id, current_price FROM stocks`);
+  try {
+    // Get all stocks with their current prices
+    const stocks = await pool.query('SELECT stock_id, current_price FROM stocks');
+    
+    for (const stock of stocks.rows) {
+      // Get or create the price history record for this stock
+      let historyResult = await pool.query(
+        'SELECT price_history FROM stock_price_history WHERE stock_id = $1',
+        [stock.stock_id]
+      );
 
-  if (stocks.rows.length > 0) {
-    await pool.query(`DELETE FROM stock_price_history`);
-    const values = stocks.rows.map(s => `(${s.stock_id}, ${s.current_price})`).join(', ');
-    await pool.query(`
-      INSERT INTO stock_price_history (stock_id, price)
-      VALUES ${values}
-    `);
+      let history = [];
+      if (historyResult.rows.length > 0) {
+        // Existing record found - use its history array
+        history = historyResult.rows[0].price_history || [];
+      } else {
+        // No record exists - create a new one
+        await pool.query(
+          'INSERT INTO stock_price_history (stock_id, price, initial_price) VALUES ($1, $2, $3)',
+          [stock.stock_id, stock.current_price, stock.current_price]
+        );
+      }
+
+      // Add current price to history
+      history.push(stock.current_price);
+
+      // Trim to last 50 prices
+      if (history.length > 50) {
+        history = history.slice(history.length - 50);
+      }
+
+      // Update the history in the database
+      await pool.query(
+        `UPDATE stock_price_history 
+         SET price = $1, price_history = $2, timestamp = NOW()
+         WHERE stock_id = $3`,
+        [stock.current_price, history, stock.stock_id]
+      );
+    }
+  } catch (err) {
+    console.error('Error updating price history:', err);
   }
 }
 
@@ -1184,5 +1216,23 @@ async function monitor() {
           }
      }
 }
+
+// Get price history for a stock
+app.get("/api/stocks/price-history/:stockId", async (req, res) => {
+  const { stockId } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT price_history FROM stock_price_history WHERE stock_id = $1",
+      [stockId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Stock not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching price history:", err);
+    res.status(500).json({ message: "Failed to fetch price history" });
+  }
+});
 
 monitor();

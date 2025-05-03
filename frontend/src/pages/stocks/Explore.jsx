@@ -7,7 +7,7 @@ import "../../css/Explore.css";
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [topTradedStocks, setTopTradedStocks] = useState([]);
-  const [searchResult, setSearchResult] = useState(null);
+  const [filteredStocks, setFilteredStocks] = useState([]);
   const [addedWatchlist, setAddedWatchlist] = useState(new Set());
   const navigate = useNavigate();
 
@@ -15,25 +15,32 @@ const Explore = () => {
   const userId = user?.id;
 
   useEffect(() => {
+    let interval;
+  
     const fetchTopStocks = async () => {
       try {
         const res = await fetch(`${apiUrl}/api/stocks/top`);
         const data = await res.json();
-        setTopTradedStocks(data);
+        // Only update if there's no search query active
+        if (searchQuery.trim() === "") {
+          setTopTradedStocks(data);
+        }
       } catch (err) {
         console.error("Failed to fetch stocks", err);
       }
     };
-
-    fetchTopStocks(); // initial fetch
-    const interval = setInterval(fetchTopStocks, 100); // refresh every 100ms
-
-    return () => clearInterval(interval); // cleanup on unmount
-  }, []);
+  
+    fetchTopStocks(); // Initial fetch
+  
+    // Set interval only if not searching
+    interval = setInterval(fetchTopStocks, 100);
+  
+    return () => clearInterval(interval);
+  }, [searchQuery]); // depend on searchQuery
 
   useEffect(() => {
     if (!userId) return;
-  
+
     fetch(`${apiUrl}/api/watchlist/${userId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -45,22 +52,19 @@ const Explore = () => {
       });
   }, [userId]);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-
-    try {
-      const res = await fetch(`${apiUrl}/api/stocks/search?q=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setSearchResult(data);
-      } else {
-        setSearchResult("No stock found");
-      }
-    } catch (err) {
-      console.error("Search error:", err);
-      setSearchResult("Error fetching stocks");
+  // Filter stocks as user types
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredStocks(topTradedStocks);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = topTradedStocks.filter(stock =>
+        stock.company_name.toLowerCase().includes(query) ||
+        stock.symbol.toLowerCase().includes(query)
+      );
+      setFilteredStocks(filtered);
     }
-  };
+  }, [searchQuery, topTradedStocks]);
 
   const addToWatchlist = (stockId) => {
     if (!userId) {
@@ -114,7 +118,6 @@ const Explore = () => {
   return (
     <div className="explore-container">
       <NavBar />
-
       <h2>Explore Stocks</h2>
 
       <div className="search-bar">
@@ -124,28 +127,17 @@ const Explore = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <button onClick={handleSearch}>Search</button>
       </div>
 
-      {/* 🔍 Search Results */}
-      {searchResult !== null && (
-        <div className="search-result">
-          <h3>Search Results</h3>
-          {typeof searchResult === "string" ? (
-            <p className="no-results">{searchResult}</p>
-          ) : (
-            searchResult.map(renderStockCard)
-          )}
-        </div>
-      )}
-
-      {/* 📈 Top 4 Most Traded */}
-      <h3 className="top-heading">Top 4 Most Traded Stocks</h3>
+      {/* 🔍 Live Filtered Results */}
+      <h3 className="top-heading">
+        {searchQuery ? "Search Results" : "Top 4 Most Traded Stocks"}
+      </h3>
       <div className="stock-list">
-        {topTradedStocks.length > 0 ? (
-          topTradedStocks.map(renderStockCard)
+        {filteredStocks.length > 0 ? (
+          filteredStocks.map(renderStockCard)
         ) : (
-          <p>No stocks available.</p>
+          <p>No stocks found.</p>
         )}
       </div>
 

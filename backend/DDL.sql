@@ -112,7 +112,9 @@ CREATE TABLE stock_price_history (
   id SERIAL PRIMARY KEY,
   stock_id INT REFERENCES stocks(stock_id),
   price NUMERIC NOT NULL,
+  initial_price NUMERIC,
   price_history NUMERIC[],
-  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_stock_id UNIQUE (stock_id)
 );
 

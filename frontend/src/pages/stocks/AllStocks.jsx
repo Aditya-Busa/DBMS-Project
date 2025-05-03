@@ -7,31 +7,38 @@ import NavBar from "../../components/Nav2";
 const AllStocks = () => {
   const [stocks, setStocks] = useState([]);
   const [addedWatchlist, setAddedWatchlist] = useState(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
 
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const userId = user?.id;
 
   // Fetch all stocks every 100ms
   useEffect(() => {
+    let interval;
+  
     const fetchStocks = async () => {
       try {
         const res = await fetch(`${apiUrl}/api/stocks/all`);
         const data = await res.json();
-        setStocks(data);
+        if (searchQuery.trim() === "") {
+          setStocks(data); // Don't update while searching
+        }
       } catch (err) {
-        console.error("Error fetching all stocks:", err);
+        console.error("Failed to fetch stocks", err);
       }
     };
-
-    fetchStocks(); // Initial fetch
-    const interval = setInterval(fetchStocks, 100); // Re-fetch every 100ms
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  
+    fetchStocks(); // initial fetch
+  
+    interval = setInterval(fetchStocks, 100); // update only if not searching
+  
+    return () => clearInterval(interval);
+  }, [searchQuery]); // run effect when searchQuery changes
+  
 
   useEffect(() => {
     if (!userId) return;
-  
+
     fetch(`${apiUrl}/api/watchlist/${userId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -70,15 +77,30 @@ const AllStocks = () => {
       });
   };
 
+  // Filter stocks based on search query
+  const filteredStocks = stocks.filter((stock) =>
+    stock.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    stock.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="all-container">
       <NavBar />
 
       <h2>All Stocks</h2>
 
+      <input
+        type="text"
+        placeholder="Search by company name or symbol..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="search-input"
+        style={{ marginBottom: "1rem", padding: "0.5rem", width: "300px", fontSize: "1rem" }}
+      />
+
       <div className="stock-list">
-        {stocks.length > 0 ? (
-          stocks.map((stock) => (
+        {filteredStocks.length > 0 ? (
+          filteredStocks.map((stock) => (
             <Link to={`/stocks/${stock.stock_id}`} className="stock-card" key={stock.stock_id}>
               <div className="stock-name">{stock.company_name}</div>
               <div className="stock-symbol">{stock.symbol}</div>
