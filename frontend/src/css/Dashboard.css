@@ -35,3 +35,84 @@
     margin-top: 20px;
     font-size: 1.1rem;
   }
+
+  .dashboard-container {
+    padding: 32px;
+    padding-top: 200px;
+    font-family: Arial, sans-serif;
+    width: 1300px;
+    max-width: 2000px;
+    margin: auto;
+  }
+  
+  .dashboard-section {
+    background-color: #ffffff;
+    padding: 24px;
+    margin-bottom: 32px;
+    border-radius: 12px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-section h2 {
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+  
+  .dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .dashboard-table th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+  }
+  
+  .summary {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+
+  .summary p {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .profit {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .loss {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 16px;
+    }
+  
+    .dashboard-section {
+      padding: 16px;
+    }
+  
+    .dashboard-table th,
+    .dashboard-table td {
+      padding: 8px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  

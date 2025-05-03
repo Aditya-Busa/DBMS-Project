@@ -19,7 +19,6 @@ const StockDetail = () => {
 
   useEffect(() => {
     let isMounted = true;
-
     const fetchAllData = async () => {
       const [stockRes, bookRes, candlestickRes] = await Promise.all([
         fetch(`${apiUrl}/api/stocks/${stockId}`).then(res => res.json()),

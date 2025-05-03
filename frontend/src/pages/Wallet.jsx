@@ -25,8 +25,10 @@ export default function Wallet() {
 
       // normalize stock transactions: compute amount and type
       const stockTx = (stockJson.transactions || []).map(tx => {
-        const isSell = tx.sell_order_id && tx.sell_order_id_user === tx.user_id;
-        const amount = (isSell ? 1 : -1) * tx.quantity * parseFloat(tx.price_per_share);
+        // These variables are not used anywhere
+
+        // const isSell = tx.sell_order_id && tx.sell_order_id_user === tx.user_id;
+        // const amount = (isSell ? 1 : -1) * tx.quantity * parseFloat(tx.price_per_share);
         return {
           transaction_id: tx.transaction_id,
           transaction_type: tx.transaction_type,

@@ -12,6 +12,7 @@ import StockDetail from "./pages/stocks/StockDetail";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet"; // New wallet page
 import Notifications from "./pages/stocks/Notifications"; 
+import AllStocks from "./pages/stocks/AllStocks";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
       <Route path="/profile" element={<Profile />} /> 
       <Route path="/history" element={<History />} />
       <Route path="/notifications" element={<Notifications />} />
+      <Route path="/stocks/all" element={<AllStocks />} />
     </Routes>
   );
 }

@@ -154,9 +154,12 @@ app.post("/logout", (req, res) => {
 
 app.get("/api/stocks/top", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT stock_id, symbol, company_name, current_price FROM stocks ORDER BY current_price DESC LIMIT 4"
-    );
+    const result = await pool.query(`
+      SELECT stock_id, symbol, company_name, current_price, count
+      FROM stocks
+      ORDER BY count DESC
+      LIMIT 4
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching top stocks:", err);
@@ -247,6 +250,20 @@ app.delete("/api/watchlist/remove", async (req, res) => {
   } catch (err) {
     console.error("Error removing from watchlist:", err);
     res.status(500).json({ message: "Failed to remove stock from watchlist" });
+  }
+});
+
+app.get("/api/stocks/all", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT stock_id, symbol, company_name, current_price, count
+      FROM stocks
+      ORDER BY company_name ASC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching all stocks:", err);
+    res.status(500).json({ message: "Error fetching all stocks" });
   }
 });
 
@@ -1045,16 +1062,21 @@ app.get("/api/history", isAuthenticated, async (req, res) => {
     const result = await pool.query(
       `
       SELECT 
-        o.order_id,
-        o.order_type,
-        o.quantity,
-        o.price_per_share,
-        o.created_at,
+        t.transaction_id,
+        CASE 
+          WHEN o_buyer.user_id = $1 THEN 'buy'
+          WHEN o_seller.user_id = $1 THEN 'sell'
+        END AS order_type,
+        t.quantity,
+        t.price_per_share,
+        t.executed_at,
         s.symbol AS stock_symbol
-      FROM orders o
-      JOIN stocks s ON o.stock_id = s.stock_id
-      WHERE o.user_id = $1 AND o.status = 'executed'
-      ORDER BY o.created_at DESC
+      FROM transactions t
+      JOIN orders o_buyer ON t.buy_order_id = o_buyer.order_id
+      JOIN orders o_seller ON t.sell_order_id = o_seller.order_id
+      JOIN stocks s ON t.stock_id = s.stock_id
+      WHERE o_buyer.user_id = $1 OR o_seller.user_id = $1
+      ORDER BY t.executed_at DESC
       `,
       [userId]
     );
@@ -1063,6 +1085,21 @@ app.get("/api/history", isAuthenticated, async (req, res) => {
   } catch (err) {
     console.error("Error fetching order history:", err);
     res.status(500).json({ message: "Error fetching history" });
+  }
+});
+
+app.delete("/api/notifications/clear", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+  
+  try {
+    await pool.query(
+      "DELETE FROM notifications WHERE user_id = $1",
+      [userId]
+    );
+    res.json({ message: "All notifications cleared" });
+  } catch (err) {
+    console.error("Error clearing notifications:", err);
+    res.status(500).json({ message: "Failed to clear notifications" });
   }
 });
 

@@ -81,7 +81,7 @@ const History = () => {
                 <span>@ ₹{order.price_per_share}</span>
               </div>
               <div className="timestamp">
-                {new Date(order.created_at).toLocaleString()}
+                {new Date(order.created_at ?? order.executed_at).toLocaleString()}
               </div>
             </div>
           ))

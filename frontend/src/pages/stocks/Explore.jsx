@@ -1,4 +1,3 @@
-// src/pages/stocks/Explore.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiUrl } from "../../config/config";
@@ -16,11 +15,35 @@ const Explore = () => {
   const userId = user?.id;
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/stocks/top`)
-      .then((res) => res.json())
-      .then((data) => setTopTradedStocks(data))
-      .catch((err) => console.error("Failed to fetch stocks", err));
+    const fetchTopStocks = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/stocks/top`);
+        const data = await res.json();
+        setTopTradedStocks(data);
+      } catch (err) {
+        console.error("Failed to fetch stocks", err);
+      }
+    };
+
+    fetchTopStocks(); // initial fetch
+    const interval = setInterval(fetchTopStocks, 100); // refresh every 100ms
+
+    return () => clearInterval(interval); // cleanup on unmount
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+  
+    fetch(`${apiUrl}/api/watchlist/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const watchlistSet = new Set(data.map(item => item.stock_id));
+        setAddedWatchlist(watchlistSet);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch watchlist", err);
+      });
+  }, [userId]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -37,32 +60,6 @@ const Explore = () => {
       console.error("Search error:", err);
       setSearchResult("Error fetching stocks");
     }
-  };
-
-  const handleBuy = (stockId) => {
-    if (!userId) {
-      alert("Please log in to buy stocks.");
-      return;
-    }
-
-    const quantity = prompt("Enter quantity to buy:");
-    const parsedQty = parseInt(quantity);
-
-    if (!parsedQty || parsedQty <= 0) {
-      alert("Please enter a valid quantity.");
-      return;
-    }
-
-    fetch(`${apiUrl}/api/stocks/buy`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, stockId, quantity: parsedQty })
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Buy order executed. New Price: $" + data.newPrice.toFixed(2));
-      })
-      .catch((err) => console.error("Error in buy order", err));
   };
 
   const addToWatchlist = (stockId) => {
@@ -101,6 +98,7 @@ const Explore = () => {
       <div className="stock-name">{stock.company_name}</div>
       <div className="stock-symbol">{stock.symbol}</div>
       <div className="stock-price">${stock.current_price}</div>
+      <div className="stock-trade-count">{stock.count} trades</div>
       <button
         disabled={addedWatchlist.has(stock.stock_id)}
         onClick={(e) => {
@@ -115,7 +113,7 @@ const Explore = () => {
 
   return (
     <div className="explore-container">
-      <NavBar/>
+      <NavBar />
 
       <h2>Explore Stocks</h2>
 
@@ -151,12 +149,20 @@ const Explore = () => {
         )}
       </div>
 
-      <button
-        className="dashboard-btn"
-        onClick={() => navigate("/stocks/dashboard")}
-      >
-        Go to My Dashboard
-      </button>
+      <div className="button-group">
+        <button
+          className="dashboard-btn"
+          onClick={() => navigate("/stocks/dashboard")}
+        >
+          Go to My Dashboard
+        </button>
+        <button
+          className="dashboard-btn"
+          onClick={() => navigate("/stocks/all")}
+        >
+          View All Stocks
+        </button>
+      </div>
     </div>
   );
 };

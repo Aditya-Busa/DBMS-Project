@@ -68,105 +68,111 @@ const Dashboard = () => {
 
   return (
     <>
-      <NavBar />
+    <NavBar />
       <div className="dashboard-container">
-        <h2>My Holdings</h2>
-        {holdings.length === 0 ? (
-          <p>No holdings to show.</p>
-        ) : (
-          <>
+        <div className="dashboard-section">
+          <h2>My Holdings</h2>
+            {holdings.length === 0 ? (
+            <p>No holdings to show.</p>
+          ) : (
+            <>
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Symbol</th>
+                    <th>Quantity</th>
+                    <th>Avg. Price</th>
+                    <th>Current Price</th>
+                    <th>Invested</th>
+                    <th>Gain/Loss</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {holdings.map((stock) => (
+                    <tr key={stock.stock_id}>
+                      <td>{stock.company_name}</td>
+                      <td>{stock.symbol}</td>
+                      <td>{stock.quantity}</td>
+                      <td>₹{stock.avgPrice.toFixed(2)}</td>
+                      <td>₹{stock.currentPrice.toFixed(2)}</td>
+                      <td>₹{stock.invested.toFixed(2)}</td>
+                      <td className={stock.profit >= 0 ? "profit" : "loss"}>
+                        ₹{stock.profit.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="summary">
+                <p><strong>Total Invested:</strong> ₹{netInvested.toFixed(2)}</p>
+                <p>
+                  <strong>Net Profit/Loss:</strong>{" "}
+                  <span className={netProfit >= 0 ? "profit" : "loss"}>
+                    ₹{netProfit.toFixed(2)}
+                  </span>
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="dashboard-section">
+          <h2>Active Buy Orders</h2>
+            {buyOrders.length === 0 ? (
+            <p>No active buy orders.</p>
+          ) : (
             <table className="dashboard-table">
               <thead>
                 <tr>
                   <th>Company</th>
                   <th>Symbol</th>
                   <th>Quantity</th>
-                  <th>Avg. Price</th>
-                  <th>Current Price</th>
-                  <th>Invested</th>
-                  <th>Gain/Loss</th>
+                  <th>Price/Share</th>
                 </tr>
               </thead>
               <tbody>
-                {holdings.map((stock) => (
-                  <tr key={stock.stock_id}>
-                    <td>{stock.company_name}</td>
-                    <td>{stock.symbol}</td>
-                    <td>{stock.quantity}</td>
-                    <td>₹{stock.avgPrice.toFixed(2)}</td>
-                    <td>₹{stock.currentPrice.toFixed(2)}</td>
-                    <td>₹{stock.invested.toFixed(2)}</td>
-                    <td className={stock.profit >= 0 ? "profit" : "loss"}>
-                      ₹{stock.profit.toFixed(2)}
-                    </td>
+                {buyOrders.map((order) => (
+                  <tr key={order.order_id}>
+                    <td>{order.company_name}</td>
+                    <td>{order.symbol}</td>
+                    <td>{order.quantity}</td>
+                    <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          )}
+        </div>
 
-            <div className="summary">
-              <p><strong>Total Invested:</strong> ₹{netInvested.toFixed(2)}</p>
-              <p>
-                <strong>Net Profit/Loss:</strong>{" "}
-                <span className={netProfit >= 0 ? "profit" : "loss"}>
-                  ₹{netProfit.toFixed(2)}
-                </span>
-              </p>
-            </div>
-          </>
-        )}
-
-        <h2 style={{ marginTop: "2rem" }}>Active Buy Orders</h2>
-        {buyOrders.length === 0 ? (
-          <p>No active buy orders.</p>
-        ) : (
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Symbol</th>
-                <th>Quantity</th>
-                <th>Price/Share</th>
-              </tr>
-            </thead>
-            <tbody>
-              {buyOrders.map((order) => (
-                <tr key={order.order_id}>
-                  <td>{order.company_name}</td>
-                  <td>{order.symbol}</td>
-                  <td>{order.quantity}</td>
-                  <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
+        <div className="dashboard-section">
+          <h2>Active Sell Orders</h2>
+            {sellOrders.length === 0 ? (
+            <p>No active sell orders.</p>
+          ) : (
+            <table className="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Symbol</th>
+                  <th>Quantity</th>
+                  <th>Price/Share</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
-        <h2 style={{ marginTop: "2rem" }}>Active Sell Orders</h2>
-        {sellOrders.length === 0 ? (
-          <p>No active sell orders.</p>
-        ) : (
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Symbol</th>
-                <th>Quantity</th>
-                <th>Price/Share</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sellOrders.map((order) => (
-                <tr key={order.order_id}>
-                  <td>{order.company_name}</td>
-                  <td>{order.symbol}</td>
-                  <td>{order.quantity}</td>
-                  <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {sellOrders.map((order) => (
+                  <tr key={order.order_id}>
+                    <td>{order.company_name}</td>
+                    <td>{order.symbol}</td>
+                    <td>{order.quantity}</td>
+                    <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </>
   );
