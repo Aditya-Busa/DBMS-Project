@@ -1,17 +1,20 @@
 .home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Allow content to grow downward */
+  min-height: 100vh; /* Let content grow beyond viewport */
+  padding: 40px 20px;
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-.home-container h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden;
+  background-color: #f5f5f5;
 }
 
 .home-container::before {
   content: "";
-  position: absolute;
+  position: fixed; /* Changed from absolute to fixed for full-page coverage */
   top: 0;
   left: 0;
   right: 0;
@@ -19,8 +22,16 @@
   background-image: url('../images/image.png');
   background-size: cover;
   background-position: center;
+  background-repeat: repeat-y;
   opacity: 0.25;
   z-index: 0;
+}
+
+
+.home-container h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .home-container p {

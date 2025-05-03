@@ -2,7 +2,8 @@
 
 /* Main container styling */
 .temp {
-    margin-top: 670px;
+    height: 100vh;
+    margin-top: 80px;
 }
 
 .stock-detail-container {

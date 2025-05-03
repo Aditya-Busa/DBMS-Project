@@ -1,15 +1,15 @@
 /* src/css/Explore.css */
 
 .watchlist-container {
-  padding: 32px;
-  font-family: Arial, sans-serif;
-  max-width: 1200px;
-  margin: auto;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Center vertically and horizontally */
-  min-height: 80vh; /* Ensure it takes at least 80% of the viewport height */
+  flex-direction: column; /* Stack children vertically */
+  max-height: calc(100vh - 180px);
+  gap: 32px; /* Creates space between the sections */
+  font-family: Arial, sans-serif;
+  width: 900px;
+  max-width: 1300px; /* Adjust to fit content */
+  margin: 50px auto;
+  box-sizing: border-box;
 }
 
 .watchlist-container h2 {
@@ -23,6 +23,7 @@
 .w-stock-list {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
   width: 100%;
 }

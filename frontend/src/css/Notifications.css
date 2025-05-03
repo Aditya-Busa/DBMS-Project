@@ -1,6 +1,8 @@
 .notifications-container {
+  display: flex;
+  flex-direction: column;
   max-width: 800px;
-  margin: 20px auto;
+  margin: 70px auto;
   padding: 20px;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
@@ -12,9 +14,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 15px;
   border-bottom: 2px solid #f0f0f0;
-  margin-bottom: 20px;
 }
 
 .notification-actions {

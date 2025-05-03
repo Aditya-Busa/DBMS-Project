@@ -42,37 +42,39 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Create Your Account</h2>
-      <form onSubmit={handleSubmit} className="register-form">
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={username}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="register-btn">
-          Register
-        </button>
-      </form>
-      <p className="login-redirect">
-        Already have an account? <Link to="/login">Login here</Link>
-      </p>
+    <div className='register-page'>
+      <div className="register-container">
+        <h2>Create Your Account</h2>
+        <form onSubmit={handleSubmit} className="register-form">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={username}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="register-btn">
+            Register
+          </button>
+        </form>
+        <p className="login-redirect">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
+      </div>
     </div>
   );
 };

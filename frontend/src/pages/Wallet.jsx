@@ -102,15 +102,15 @@ export default function Wallet() {
         </p>
 
         <form className="wallet-form" onSubmit={handleSubmit}>
+          <p>Type: </p>
           <label>
-            Type:
             <select name="type" value={form.type} onChange={handleChange}>
               <option value="deposit">Deposit</option>
               <option value="withdraw">Withdraw</option>
             </select>
           </label>
+          <p>Amount: </p>
           <label>
-            Amount:
             <input
               type="number"
               name="amount"

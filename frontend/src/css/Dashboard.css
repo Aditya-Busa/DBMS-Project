@@ -1,13 +1,13 @@
 .dashboard-container {
   display: flex;
   flex-direction: column; /* Stack children vertically */
+  max-height: calc(100vh - 180px);
   gap: 32px; /* Creates space between the sections */
-  padding: 32px;
-  padding-top: 200px;
   font-family: Arial, sans-serif;
   width: 1200px;
   max-width: 1300px; /* Adjust to fit content */
-  margin: 0 auto;
+  padding: 0px auto;
+  margin: 50px auto;
   box-sizing: border-box;
 }
 
@@ -96,4 +96,3 @@
     font-size: 0.9rem;
   }
 }
-

@@ -76,34 +76,36 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-page">
+      <div className="login-container">
+        <h2 className="login-title">Sign In</h2>
+        {error && <p className="login-error">{error}</p>}
+        <form className="login-form" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="login-input"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            className="login-input"
+            required
+          />
+          <button type="submit" className="login-button">Login</button>
+        </form>
 
-      <div>
-        Don't have an account?{" "}
-        <Link to="/register" className="link">
-          Sign up here
-        </Link>
+        <div className="login-footer">
+          Don't have an account?{" "}
+          <Link to="/register" className="login-link">Sign up here</Link>
+        </div>
       </div>
     </div>
   );
