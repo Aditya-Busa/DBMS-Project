@@ -2,7 +2,7 @@
 .explore-container {
   display: flex;
   flex-direction: column;
-  margin-top: 900px;
+  margin-top: 800px;
   text-align: center;
   padding: 30px;
   min-height: calc(100vh - 70px);
@@ -15,6 +15,11 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.explore-content h2 {
+  font-size: 35px;
+  color: rgb(67, 67, 67);
 }
 
 /* Page Header */
@@ -175,6 +180,8 @@
 
 /* Button Group */
 .button-group {
+  grid-area: dashboard;
+  margin-top: 20px;
   display: flex;
   gap: 16px;
   justify-content: center;

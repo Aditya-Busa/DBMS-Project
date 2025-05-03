@@ -117,8 +117,8 @@ const StockDetail = () => {
   };
 
   // Chart data configuration
-  const maxValue = Math.floor(stock?.current_price * 1.5);
-  const minValue = Math.floor(stock?.current_price * 0.5);
+  const maxValue = Math.floor(stock?.current_price * 1.05);
+  const minValue = Math.floor(stock?.current_price * 0.95);
   const chartData = {
     labels: priceHistory.map((_, index) => {
       // Display time in HH:MM:SS format
@@ -183,7 +183,7 @@ const StockDetail = () => {
           }
         },
         ticks: {
-          stepSize: 10,
+          stepSize: 1,
           callback: function(value) {
             return '₹' + value;
           }

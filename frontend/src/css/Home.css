@@ -1,6 +1,5 @@
 .home-container {
   text-align: center;
-  padding: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -53,3 +52,67 @@ opacity: 0.85;
   color: #a0a0b2;
   font-size: 1.2rem;
 }
+
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Space between the buttons */
+  margin-top: 1.5rem; /* Space above the button group */
+}
+
+.auth-buttons button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #00b386;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 2;
+}
+
+.auth-buttons button:hover {
+  background-color: #009e75;
+}
+
+.guide-box {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  margin: 2rem auto;
+  z-index: 2;
+  position: relative;
+  text-align: left;
+}
+
+.guide-box h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.guide-box ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: #444;
+}
+
+.guide-box li {
+  margin-bottom: 0.5rem;
+}
+
+.onboard-tip {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #202026;
+  text-align: center;
+}
+

@@ -1188,11 +1188,11 @@ async function updateStockPriceHistory() {
 
   if (stocks.rows.length > 0) {
     const values = stocks.rows
-      .map(s => `(${s.stock_id}, ${s.current_price})`)
+      .map(s => `(${s.stock_id}, ${s.current_price}, ${s.current_price})`)
       .join(', ');
 
     await pool.query(`
-      INSERT INTO stock_price_history (stock_id, price)
+      INSERT INTO stock_price_history (stock_id, price, initial_price)
       VALUES ${values}
       ON CONFLICT (stock_id)
       DO UPDATE SET
@@ -1244,6 +1244,7 @@ app.get('/api/top-gainers-losers', async (req, res) => {
        ((s.current_price - sph.initial_price) / NULLIF(sph.initial_price, 0))::FLOAT * 100 AS percentage_change
   FROM stocks s
   JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+  WHERE sph.initial_price IS NOT NULL AND sph.initial_price != 0
   ORDER BY percentage_change DESC
   LIMIT 4
     `);
@@ -1255,6 +1256,7 @@ app.get('/api/top-gainers-losers', async (req, res) => {
              ((s.current_price - sph.initial_price) / NULLIF(sph.initial_price, 0))::FLOAT * 100 AS percentage_change
       FROM stocks s
       JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+      WHERE sph.initial_price IS NOT NULL AND sph.initial_price != 0
       ORDER BY percentage_change ASC
       LIMIT 4
     `);

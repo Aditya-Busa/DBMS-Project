@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS stocks;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS stock_price_history;
 
 -- Table for Users
 CREATE TABLE users (

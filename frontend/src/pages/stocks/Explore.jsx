@@ -136,7 +136,7 @@ const Explore = () => {
       <div className="stock-name">{stock.company_name}</div>
       <div className="stock-symbol">{stock.symbol}</div>
       <div className="stock-price">${stock.current_price}</div>
-      <div className="stock-percentage-change">{stock.percentage_change.toFixed(2)} gain</div>
+      <div className="stock-percentage-change">{(stock.percentage_change !== null && stock.percentage_change !== undefined ? stock.percentage_change.toFixed(2) : 'N/A')} gain</div>
       <button
         disabled={addedWatchlist.has(stock.stock_id)}
         onClick={(e) => {
@@ -158,7 +158,7 @@ const Explore = () => {
       <div className="stock-name">{stock.company_name}</div>
       <div className="stock-symbol">{stock.symbol}</div>
       <div className="stock-price">${stock.current_price}</div>
-      <div className="stock-percentage change">{stock.percentage_change.toFixed(2)} loss</div>
+      <div className="stock-percentage change">{(stock.percentage_change !== null && stock.percentage_change !== undefined ? stock.percentage_change.toFixed(2) : 'N/A')} loss</div>
       <button
         disabled={addedWatchlist.has(stock.stock_id)}
         onClick={(e) => {
@@ -219,7 +219,6 @@ const Explore = () => {
           </div>
   
           {/* Bottom Right - Dashboard Buttons */}
-          <div className="dashboard-section">
             <div className="button-group">
               <button className="dashboard-btn" onClick={() => navigate("/stocks/dashboard")}>
                 Go to My Dashboard
@@ -228,7 +227,6 @@ const Explore = () => {
                 View All Stocks
               </button>
             </div>
-          </div>
         </div>
       </div>
     </div>

@@ -98,6 +98,7 @@ const AllStocks = () => {
         style={{ marginBottom: "1rem", padding: "0.5rem", width: "300px", fontSize: "1rem" }}
       />
 
+      <div className="stock-list-wrapper">
       <div className="stock-list">
         {filteredStocks.length > 0 ? (
           filteredStocks.map((stock) => (
@@ -120,6 +121,7 @@ const AllStocks = () => {
         ) : (
           <p>No stocks found.</p>
         )}
+      </div>
       </div>
     </div>
   );
