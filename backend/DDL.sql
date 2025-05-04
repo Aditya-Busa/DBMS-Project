@@ -1,3 +1,12 @@
+-- DO $$ DECLARE
+--     r RECORD;
+-- BEGIN
+--     FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+--         EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
+--     END LOOP;
+-- END $$;
+
+
 -- Drop in reverse dependency order
 DROP TABLE IF EXISTS wallet_transactions;
 DROP TABLE IF EXISTS personal_information;
@@ -17,7 +26,8 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    balance NUMERIC(15,2) DEFAULT 0.00
+    balance NUMERIC(15,2) DEFAULT 0.00,
+    reserved_balance NUMERIC(15,2) DEFAULT 0.00
 );
 
 -- Table for Stocks
@@ -50,6 +60,7 @@ CREATE TABLE holdings (
     user_id INT NOT NULL,
     stock_id INT NOT NULL,
     quantity INT NOT NULL,
+    reserved_quantity INT DEFAULT 0,
     avg_price NUMERIC(15,2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (stock_id) REFERENCES stocks(stock_id),

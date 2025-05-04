@@ -5,6 +5,7 @@ import "../css/Wallet.css";
 
 export default function Wallet() {
   const [balance, setBalance] = useState(0);
+  const [reserved_balance, setReservedBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [form, setForm] = useState({ type: "deposit", amount: "" });
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,7 @@ export default function Wallet() {
       const stockJson = await stockRes.json();
 
       setBalance(balJson.balance || 0);
+      setReservedBalance(balJson.reserved_balance || 0);
 
       // normalize stock transactions: compute amount and type
       const stockTx = (stockJson.transactions || []).map(tx => {
@@ -98,7 +100,12 @@ export default function Wallet() {
       <div className="wallet-container">
         <h2>Wallet</h2>
         <p className="wallet-balance">
+        <div>
           <strong>Current Balance:</strong> ₹{Number(balance).toFixed(2)}
+        </div>
+        <div>
+          <strong>Current Reserved Balance:</strong> ₹{Number(reserved_balance).toFixed(2)}
+        </div>
         </p>
 
         <form className="wallet-form" onSubmit={handleSubmit}>

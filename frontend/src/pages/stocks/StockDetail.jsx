@@ -117,8 +117,8 @@ const StockDetail = () => {
   };
 
   // Chart data configuration
-  const maxValue = Math.floor(stock?.current_price * 1.05);
-  const minValue = Math.floor(stock?.current_price * 0.95);
+  const maxValue = Math.floor(stock?.current_price * 1.1);
+  const minValue = Math.floor(stock?.current_price * 0.9);
   const chartData = {
     labels: priceHistory.map((_, index) => {
       // Display time in HH:MM:SS format

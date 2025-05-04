@@ -308,12 +308,49 @@ app.post("/api/orders", async (req, res) => {
 
     // 1. Insert the new order
     if(orderType === 'buy'){
+      const requiredAmount = parseFloat(pricePerShare * quantity).toFixed(2);
       const balRes = await pool.query(
         "SELECT balance FROM users WHERE user_id = $1",
         [userId]
       );
       const balance = parseFloat(balRes.rows[0]?.balance || 0);
-      if (balance < pricePerShare*quantity) return res.status(400).json({ message: "Insufficient funds for Buy" });
+      const reserved_balance = parseFloat(balRes.rows[0]?.reserved_balance || 0);
+      const available = balance - reserved_balance;
+
+      if (available >= requiredAmount) {
+        await pool.query(`
+          UPDATE users
+          SET reserved_balance = reserved_balance + $1, balance = balance - $1
+          WHERE user_id = $2
+        `, [requiredAmount, userId]);
+        
+      } else {
+        return res.status(400).json({ message: "Insufficient funds for Buy" });
+      }
+    }
+    else{
+      const result = await pool.query(`
+        SELECT quantity, reserved_quantity FROM holdings
+        WHERE user_id = $1 AND stock_id = $2
+      `, [userId, stockId]);
+      
+      if (result.rows.length === 0) {
+        return res.status(400).json({ message: "You don't own this stock." });
+      }
+
+      const reserved_quantity = result.rows[0].reserved_quantity;
+      const quantity_ = result.rows[0].quantity;
+      const available = quantity_ - reserved_quantity;
+      
+      if (available >= quantity) {
+        await pool.query(`
+          UPDATE holdings
+          SET reserved_quantity = reserved_quantity + $1
+          WHERE user_id = $2 AND stock_id = $3
+        `, [quantity, userId, stockId]);
+      } else {
+        return res.status(400).json({ message: "Not enough stock to sell" });
+      }
     }
 
     const orderResult = await pool.query(
@@ -516,7 +553,8 @@ async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, b
     const result = await pool.query(
       `WITH updated AS (
          UPDATE holdings
-         SET quantity = quantity - $1
+         SET quantity = quantity - $1,
+            reserved_quantity = reserved_quantity - $1
          WHERE user_id = $2 AND stock_id = $3
          RETURNING quantity
        )
@@ -533,12 +571,13 @@ async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, b
     }
   } else {
     // Create new short position (negative quantity)
-    await pool.query(
-      `INSERT INTO holdings 
-        (user_id, stock_id, quantity, avg_price)
-      VALUES ($1, $2, $3, $4)`,
-      [sellerId, stockId, -quantity, price]
-    );
+    return res.status(400).json({ message: "Not enough stock to sell in executeTrade" });
+    // await pool.query(
+    //   `INSERT INTO holdings 
+    //     (user_id, stock_id, quantity, avg_price)
+    //   VALUES ($1, $2, $3, $4)`,
+    //   [sellerId, stockId, -quantity, price]
+    // );
   }
 
   await sendNotification(buyerId, `Bought ${quantity} shares of stock ${stockId} at ₹${price}`);
@@ -587,9 +626,16 @@ async function executeTrade(buyOrderId, sellOrderId, stockId, quantity, price, b
 
 // 7. Update the balance of the users
   let Total_amount = parseFloat((price * quantity).toFixed(2));
+  const row1 =  await pool.query(
+    `SELECT * from orders where order_id = $1;`,[buyOrderId])
+  const amount = parseFloat((row1.rows[0].price_per_share * quantity).toFixed(2));
   await pool.query(
-    `UPDATE users SET balance = balance - $1 WHERE user_id = $2`,
-    [Total_amount, buyerId]
+    ` UPDATE users
+      SET
+        reserved_balance = reserved_balance - $2,
+        balance = balance - $1 + $2
+      WHERE user_id = $3;`,
+    [Total_amount, amount, buyerId]
   );
   await pool.query(
     `UPDATE users SET balance = balance + $1 WHERE user_id = $2`,
@@ -789,14 +835,20 @@ async function simulateBotTrading() {
         }
 
         // 3. Generate order parameters
-        const orderType = Math.random() < 0.5 ? 'buy' : 'sell';
+        const orderType = Math.random() < 0.6 ? 'buy' : 'sell';
         const quantity = randomInt(1, 10); // More realistic quantities
         
         // More realistic price fluctuations (1% -2%)
-        const priceDelta = orderType === 'sell' 
-          ? randomFloat(-0.01, 0.05) 
-          : randomFloat(-0.01, 0.05);
-        
+        const r = Math.random();
+
+        const priceDelta = orderType === 'buy'
+        ? (r < 0.4 ? randomFloat(0.02, 0.03)        // Upward push
+          : randomFloat(-0.005, 0.005))    // Stable
+        : (r < 0.1 ? randomFloat(-0.02, -0.01)      // Downward push
+          : r < 0.2 ? randomFloat(0.015, 0.025)      // Upward push
+          : randomFloat(-0.005, 0.005));   // Stable
+
+
         const pricePerShare = parseFloat((ltp * (1 + priceDelta)).toFixed(2));
 
         // 4. Validate all parameters before submitting
@@ -817,7 +869,7 @@ async function simulateBotTrading() {
           timeout: 500 // 5 second timeout
         });
 
-        console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare} | Status: ${response.data.message || 'Success'}`);
+        //console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare} | Status: ${response.data.message || 'Success'}`);
 
       } catch (err) {
         console.error("Bot order error:", err.response?.data?.message || err.message);
@@ -841,65 +893,68 @@ function delay(ms) {
 // Start bot trading simulation on server start
 simulateBotTrading();
 
-app.get("/api/stocks/candlestick/:stockId", async (req, res) => {
-  const stockId = req.params.stockId;
+// app.get("/api/stocks/candlestick/:stockId", async (req, res) => {
+//   const stockId = req.params.stockId;
 
-  try {
-    const result = await pool.query(
-      `WITH hourly AS (
-         SELECT
-           DATE_TRUNC('hour', created_at) AS time,
-           MIN(price_per_share) AS low,
-           MAX(price_per_share) AS high
-         FROM orders
-         WHERE stock_id = $1
-           AND status = 'executed'
-           AND created_at >= NOW() - INTERVAL '30 days'
-         GROUP BY DATE_TRUNC('hour', created_at)
-       )
-       SELECT
-         h.time,
-         h.low,
-         h.high,
-         (
-           SELECT price_per_share
-           FROM orders o2
-           WHERE o2.stock_id = $1
-             AND o2.status = 'executed'
-             AND DATE_TRUNC('hour', o2.created_at) = h.time
-           ORDER BY o2.created_at ASC
-           LIMIT 1
-         ) AS open,
-         (
-           SELECT price_per_share
-           FROM orders o3
-           WHERE o3.stock_id = $1
-             AND o3.status = 'executed'
-             AND DATE_TRUNC('hour', o3.created_at) = h.time
-           ORDER BY o3.created_at DESC
-           LIMIT 1
-         ) AS close
-       FROM hourly h
-       ORDER BY h.time DESC;`,
-      [stockId]
-    );
+//   try {
+//     const result = await pool.query(
+//       `WITH hourly AS (
+//          SELECT
+//            DATE_TRUNC('hour', created_at) AS time,
+//            MIN(price_per_share) AS low,
+//            MAX(price_per_share) AS high
+//          FROM orders
+//          WHERE stock_id = $1
+//            AND status = 'executed'
+//            AND created_at >= NOW() - INTERVAL '30 days'
+//          GROUP BY DATE_TRUNC('hour', created_at)
+//        )
+//        SELECT
+//          h.time,
+//          h.low,
+//          h.high,
+//          (
+//            SELECT price_per_share
+//            FROM orders o2
+//            WHERE o2.stock_id = $1
+//              AND o2.status = 'executed'
+//              AND DATE_TRUNC('hour', o2.created_at) = h.time
+//            ORDER BY o2.created_at ASC
+//            LIMIT 1
+//          ) AS open,
+//          (
+//            SELECT price_per_share
+//            FROM orders o3
+//            WHERE o3.stock_id = $1
+//              AND o3.status = 'executed'
+//              AND DATE_TRUNC('hour', o3.created_at) = h.time
+//            ORDER BY o3.created_at DESC
+//            LIMIT 1
+//          ) AS close
+//        FROM hourly h
+//        ORDER BY h.time DESC;`,
+//       [stockId]
+//     );
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching candlestick data:", error);
-    res.status(500).json({ message: "Failed to fetch candlestick data" });
-  }
-});
+//     res.json(result.rows);
+//   } catch (error) {
+//     console.error("Error fetching candlestick data:", error);
+//     res.status(500).json({ message: "Failed to fetch candlestick data" });
+//   }
+// });
 
 
 // GET wallet balance
 app.get("/api/wallet/balance", isAuthenticated, async (req, res) => {
   const { userId } = req.session;
   const result = await pool.query(
-    "SELECT balance FROM users WHERE user_id = $1",
+    "SELECT balance, reserved_balance FROM users WHERE user_id = $1",
     [userId]
   );
-  res.json({ balance: result.rows[0]?.balance || 0 });
+  res.json({
+    balance: result.rows[0]?.balance || 0,
+    reserved_balance: result.rows[0]?.reserved_balance || 0
+  });
 });
 
 // GET wallet_transactions
@@ -1029,7 +1084,7 @@ app.get("/api/notifications", isAuthenticated, async (req, res) => {
       FROM notifications
       WHERE user_id = $1
       ORDER BY created_at DESC
-      LIMIT 10
+      LIMIT 50
     `, [userId]);
 
     res.json({ notifications: result.rows });
@@ -1294,6 +1349,40 @@ app.get('/api/market-performance', async (req, res) => {
   }
 });
 
+// routes/orders.js or wherever appropriate
+app.post('/api/orders/cancel/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const order = await pool.query('SELECT * FROM orders WHERE order_id = $1 AND status = $2', [orderId, 'open']);
+    if (order.rows.length === 0) {
+      return res.status(201).json({ message: 'Order not found or already processed' });
+    }
+    if(order.rows[0].order_type === 'buy'){
+      const amount = order.rows[0].price_per_share;
+      const quantity = order.rows[0].quantity;
+      const Total_amount = parseFloat(amount*quantity).toFixed(2);
+      await pool.query(`UPDATE users
+                        SET reserved_balance = reserved_balance - $1,
+                            balance = balance + $1
+                        WHERE user_id = $2;`,
+                    [Total_amount, order.rows[0].user_id]);
+    }
+    else{
+      const quantity = order.rows[0].quantity;
+      await pool.query(`UPDATE holdings
+                        SET reserved_quantity = reserved_quantity - $1
+                        WHERE user_id = $2 AND stock_id = $3;`,
+                        [quantity,order.rows[0].user_id,order.rows[0].stock_id ]);
+    }
+    await pool.query('UPDATE orders SET status = $1 WHERE order_id = $2', ['cancelled', orderId]);
+    const message = `Order with Id ${orderId} in your holdings has been dropped successfully.`;
+    await sendNotification(order.rows[0].user_id, message);
+    res.status(200).json({ message: 'Order cancelled successfully' });
+  } catch (err) {
+    console.error('Cancel order error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 monitor();

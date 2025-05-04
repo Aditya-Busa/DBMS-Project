@@ -1,25 +1,25 @@
 -- Inserting data into Users table
 INSERT INTO users (username, password_hash, email, created_at, balance) VALUES
-('john_doe', '5f4dcc3b5aa765d61d8327deb882cf99', 'john.doe@example.com', '2023-01-15 09:30:00', 10000),
-('jane_smith', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'jane.smith@example.com', '2023-01-16 10:15:00', 10000),
-('mike_jones', 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3', 'mike.jones@example.com', '2023-01-17 11:20:00', 10000),
-('sarah_wilson', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'sarah.wilson@example.com', '2023-01-18 14:45:00',10000),
-('david_brown', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'david.brown@example.com', '2023-01-19 16:30:00', 10000),
-('emily_davis', 'b1b3773a05c0ed0176787a4f1574ff0075f7521e', 'emily.davis@example.com', '2023-01-20 08:15:00', 10000),
-('robert_taylor', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 'robert.taylor@example.com', '2023-01-21 12:00:00', 10000),
-('lisa_miller', 'e38ad214943daad1d64c102faec29de4afe9da3d', 'lisa.miller@example.com', '2023-01-22 13:45:00', 10000),
-('james_wilson', '2aa60a8ff7fcd473d321e0146afd9e26df395147', 'james.wilson@example.com', '2023-01-23 15:30:00', 10000),
-('patricia_lee', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'patricia.lee@example.com', '2023-01-24 10:00:00', 10000),
-('michael_clark', 'e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98', 'michael.clark@example.com', '2023-01-25 11:30:00', 10000),
-('jennifer_young', '5f4dcc3b5aa765d61d8327deb882cf99', 'jennifer.young@example.com', '2023-01-26 14:15:00', 10000),
-('william_hall', '6b3a55e0261b0304143f805a24924d0c1c445248', 'william.hall@example.com', '2023-01-27 16:00:00', 10000),
-('elizabeth_king', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', 'elizabeth.king@example.com', '2023-01-28 09:45:00', 10000),
-('charles_white', '7c222fb2927d828af22f592134e8932480637c0d', 'charles.white@example.com', '2023-01-29 12:30:00', 10000),
-('mary_green', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'mary.green@example.com', '2023-01-30 15:15:00', 10000),
-('thomas_adams', '8be3c943b1609fffbfc51aad666d0a04adf83c9d', 'thomas.adams@example.com', '2023-01-31 17:00:00', 10000),
-('nancy_scott', '2aa60a8ff7fcd473d321e0146afd9e26df395147', 'nancy.scott@example.com', '2023-02-01 10:45:00', 10000),
-('daniel_baker', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'daniel.baker@example.com', '2023-02-02 13:30:00', 10000),
-('karen_nelson', '5f4dcc3b5aa765d61d8327deb882cf99', 'karen.nelson@example.com', '2023-02-03 16:15:00', 10000);
+('Yeswanth', '$2b$10$Sd91nSTbU1DIqDWI1Edj5.ZM08EgTZA6Wd86FYAaHq88GuKlEEMRC', '123@gmail.com', '2023-01-15 09:30:00', 100000),
+('jane_smith', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'jane.smith@example.com', '2023-01-16 10:15:00', 100000),
+('mike_jones', 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3', 'mike.jones@example.com', '2023-01-17 11:20:00', 100000),
+('sarah_wilson', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'sarah.wilson@example.com', '2023-01-18 14:45:00',100000),
+('david_brown', 'f7c3bc1d808e04732adf679965ccc34ca7ae3441', 'david.brown@example.com', '2023-01-19 16:30:00', 100000),
+('emily_davis', 'b1b3773a05c0ed0176787a4f1574ff0075f7521e', 'emily.davis@example.com', '2023-01-20 08:15:00', 100000),
+('robert_taylor', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 'robert.taylor@example.com', '2023-01-21 12:00:00', 100000),
+('lisa_miller', 'e38ad214943daad1d64c102faec29de4afe9da3d', 'lisa.miller@example.com', '2023-01-22 13:45:00', 100000),
+('james_wilson', '2aa60a8ff7fcd473d321e0146afd9e26df395147', 'james.wilson@example.com', '2023-01-23 15:30:00', 100000),
+('patricia_lee', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'patricia.lee@example.com', '2023-01-24 10:00:00', 100000),
+('michael_clark', 'e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98', 'michael.clark@example.com', '2023-01-25 11:30:00', 100000),
+('jennifer_young', '5f4dcc3b5aa765d61d8327deb882cf99', 'jennifer.young@example.com', '2023-01-26 14:15:00', 100000),
+('william_hall', '6b3a55e0261b0304143f805a24924d0c1c445248', 'william.hall@example.com', '2023-01-27 16:00:00', 100000),
+('elizabeth_king', '3d4f2bf07dc1be38b20cd6e46949a1071f9d0e3d', 'elizabeth.king@example.com', '2023-01-28 09:45:00', 100000),
+('charles_white', '7c222fb2927d828af22f592134e8932480637c0d', 'charles.white@example.com', '2023-01-29 12:30:00', 100000),
+('mary_green', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'mary.green@example.com', '2023-01-30 15:15:00', 100000),
+('thomas_adams', '8be3c943b1609fffbfc51aad666d0a04adf83c9d', 'thomas.adams@example.com', '2023-01-31 17:00:00', 100000),
+('nancy_scott', '2aa60a8ff7fcd473d321e0146afd9e26df395147', 'nancy.scott@example.com', '2023-02-01 10:45:00', 100000),
+('daniel_baker', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'daniel.baker@example.com', '2023-02-02 13:30:00', 100000),
+('karen_nelson', '5f4dcc3b5aa765d61d8327deb882cf99', 'karen.nelson@example.com', '2023-02-03 16:15:00', 100000);
 
 -- Inserting data into Stocks table
 INSERT INTO stocks (symbol, company_name, current_price, market) VALUES
@@ -68,27 +68,50 @@ INSERT INTO stocks (symbol, company_name, current_price, market) VALUES
 -- (5, 5, 'sell', 8, 215.00, 'open', '2023-02-10 15:00:00');
 
 -- Inserting data into Holdings table
-INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES
-(1, 1, 10, 170.50),
-(2, 2, 5, 305.00),
-(3, 3, 8, 130.25),
-(4, 4, 12, 140.75),
-(5, 5, 15, 205.00),
-(6, 6, 20, 280.50),
-(7, 7, 7, 445.25),
-(8, 8, 9, 160.75),
-(9, 9, 11, 235.50),
-(10, 10, 6, 150.00),
-(11, 11, 4, 140.25),
-(12, 12, 8, 90.50),
-(13, 13, 10, 375.75),
-(14, 14, 15, 40.50),
-(15, 15, 12, 105.00),
-(1, 2, 8, 310.25),
-(2, 3, 6, 135.75),
-(3, 4, 10, 145.80),
-(4, 5, 7, 210.30),
-(5, 6, 12, 285.40);
+
+INSERT INTO wallet_transactions (user_id, transaction_type, amount) VALUES
+(1, 'deposit', 100000),
+(2, 'deposit', 100000),
+(3, 'deposit', 100000),
+(4, 'deposit', 100000),
+(5, 'deposit', 100000),
+(6, 'deposit', 100000),
+(7, 'deposit', 100000),
+(8, 'deposit', 100000),
+(9, 'deposit', 100000),
+(10, 'deposit', 100000),
+(11, 'deposit', 100000),
+(12, 'deposit', 100000),
+(13, 'deposit', 100000),
+(14, 'deposit', 100000),
+(15, 'deposit', 100000),
+(16, 'deposit', 100000),
+(17, 'deposit', 100000),
+(18, 'deposit', 100000),
+(19, 'deposit', 100000),
+(20, 'deposit', 100000);
+
+INSERT INTO personal_information (user_id) VALUES
+(1),
+(2),
+(3),
+(4),
+(5),
+(6),
+(7),
+(8),
+(9),
+(10),
+(11),
+(12),
+(13),
+(14),
+(15),
+(16),
+(17),
+(18),
+(19),
+(20);
 
 -- Inserting data into Transactions table
 -- INSERT INTO Transactions (buy_order_id, sell_order_id, stock_id, quantity, price_per_share, executed_at) VALUES

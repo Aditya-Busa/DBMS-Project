@@ -60,6 +60,26 @@ const Dashboard = () => {
       .catch((err) => console.error("Failed to fetch active orders", err));
   }, [userId]);
 
+  const cancelOrder = (orderId) => {
+    fetch(`${apiUrl}/api/orders/cancel/${orderId}`, {
+      method: "POST",
+    })
+      .then((res) => {
+        if (res.ok) {
+          if(res.status === 201) alert("Order is Not found or Processed Successfully");
+          else if(res.status === 200) alert("Order has been Cancelled successfully");
+          else alert("Wrong status");
+          fetchData(); // refresh active orders
+        } else {
+          alert("Failed to cancel order.");
+        }
+      })
+      .catch((err) => {
+        console.error("Cancel error:", err);
+        alert("Error cancelling order.");
+      });
+  };  
+
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 200);
@@ -130,6 +150,7 @@ const Dashboard = () => {
                   <th>Symbol</th>
                   <th>Quantity</th>
                   <th>Price/Share</th>
+                  <th>Cancel Option</th>
                 </tr>
               </thead>
               <tbody>
@@ -139,6 +160,11 @@ const Dashboard = () => {
                     <td>{order.symbol}</td>
                     <td>{order.quantity}</td>
                     <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
+                    <td>
+                    <button className="cancel-button" onClick={() => cancelOrder(order.order_id)}>
+                      Cancel
+                    </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -158,6 +184,7 @@ const Dashboard = () => {
                   <th>Symbol</th>
                   <th>Quantity</th>
                   <th>Price/Share</th>
+                  <th>Cancel Option</th>
                 </tr>
               </thead>
               <tbody>
@@ -167,6 +194,11 @@ const Dashboard = () => {
                     <td>{order.symbol}</td>
                     <td>{order.quantity}</td>
                     <td>₹{parseFloat(order.price_per_share).toFixed(2)}</td>
+                    <td>
+                    <button className="cancel-button" onClick={() => cancelOrder(order.order_id)}>
+                      Cancel
+                    </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
