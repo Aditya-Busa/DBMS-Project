@@ -14,6 +14,8 @@ import Wallet from "./pages/Wallet"; // New wallet page
 import Notifications from "./pages/stocks/Notifications"; 
 import AllStocks from "./pages/stocks/AllStocks";
 
+
+
 function App() {
   return (
     <Routes>
@@ -29,6 +31,7 @@ function App() {
       <Route path="/history" element={<History />} />
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/stocks/all" element={<AllStocks />} />
+
     </Routes>
   );
 }

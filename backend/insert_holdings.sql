@@ -1,401 +1,401 @@
-INSERT INTO holdings (user_id, stock_id, quantity, reserved_quantity, avg_price) VALUES
-(1, 1, 86, 0, 153.4),
-(1, 2, 59, 0, 220.71),
-(1, 3, 68, 0, 63.96),
-(1, 4, 100, 0, 484.29),
-(1, 5, 52, 0, 263.79),
-(1, 6, 96, 0, 100.42),
-(1, 7, 56, 0, 137.52),
-(1, 8, 63, 0, 244.31),
-(1, 9, 99, 0, 182.03),
-(1, 10, 89, 0, 108.89),
-(1, 11, 79, 0, 386.97),
-(1, 12, 80, 0, 427.03),
-(1, 13, 54, 0, 304.9),
-(1, 14, 53, 0, 175.93),
-(1, 15, 84, 0, 88.9),
-(1, 16, 65, 0, 133.42),
-(1, 17, 83, 0, 67.41),
-(1, 18, 93, 0, 429.04),
-(1, 19, 87, 0, 420.95),
-(1, 20, 82, 0, 420.0),
-(2, 1, 65, 0, 498.45),
-(2, 2, 97, 0, 326.57),
-(2, 3, 95, 0, 485.43),
-(2, 4, 68, 0, 475.09),
-(2, 5, 70, 0, 425.9),
-(2, 6, 82, 0, 431.6),
-(2, 7, 62, 0, 163.35),
-(2, 8, 52, 0, 137.6),
-(2, 9, 58, 0, 257.63),
-(2, 10, 72, 0, 198.17),
-(2, 11, 52, 0, 487.43),
-(2, 12, 73, 0, 479.35),
-(2, 13, 71, 0, 218.17),
-(2, 14, 86, 0, 202.91),
-(2, 15, 90, 0, 292.4),
-(2, 16, 99, 0, 223.06),
-(2, 17, 50, 0, 62.85),
-(2, 18, 53, 0, 203.43),
-(2, 19, 70, 0, 293.09),
-(2, 20, 87, 0, 175.63),
-(3, 1, 65, 0, 168.79),
-(3, 2, 75, 0, 474.34),
-(3, 3, 67, 0, 189.4),
-(3, 4, 65, 0, 167.42),
-(3, 5, 90, 0, 149.33),
-(3, 6, 57, 0, 308.13),
-(3, 7, 96, 0, 383.16),
-(3, 8, 73, 0, 245.02),
-(3, 9, 75, 0, 132.32),
-(3, 10, 63, 0, 182.65),
-(3, 11, 69, 0, 294.85),
-(3, 12, 57, 0, 347.43),
-(3, 13, 62, 0, 132.93),
-(3, 14, 66, 0, 162.57),
-(3, 15, 81, 0, 102.43),
-(3, 16, 85, 0, 394.65),
-(3, 17, 100, 0, 458.37),
-(3, 18, 70, 0, 233.52),
-(3, 19, 93, 0, 73.64),
-(3, 20, 81, 0, 248.84),
-(4, 1, 78, 0, 399.24),
-(4, 2, 56, 0, 208.32),
-(4, 3, 79, 0, 413.82),
-(4, 4, 51, 0, 111.23),
-(4, 5, 75, 0, 247.47),
-(4, 6, 76, 0, 292.8),
-(4, 7, 79, 0, 195.34),
-(4, 8, 85, 0, 293.31),
-(4, 9, 60, 0, 171.59),
-(4, 10, 80, 0, 336.22),
-(4, 11, 72, 0, 103.72),
-(4, 12, 66, 0, 313.02),
-(4, 13, 65, 0, 354.74),
-(4, 14, 86, 0, 331.05),
-(4, 15, 57, 0, 290.41),
-(4, 16, 68, 0, 474.74),
-(4, 17, 79, 0, 375.77),
-(4, 18, 66, 0, 381.45),
-(4, 19, 72, 0, 298.15),
-(4, 20, 79, 0, 237.67),
-(5, 1, 82, 0, 464.62),
-(5, 2, 98, 0, 280.24),
-(5, 3, 93, 0, 141.16),
-(5, 4, 67, 0, 293.9),
-(5, 5, 52, 0, 387.68),
-(5, 6, 66, 0, 258.74),
-(5, 7, 71, 0, 326.78),
-(5, 8, 84, 0, 353.47),
-(5, 9, 87, 0, 421.16),
-(5, 10, 58, 0, 201.08),
-(5, 11, 78, 0, 74.79),
-(5, 12, 58, 0, 215.32),
-(5, 13, 69, 0, 390.64),
-(5, 14, 86, 0, 353.46),
-(5, 15, 79, 0, 56.8),
-(5, 16, 86, 0, 126.15),
-(5, 17, 91, 0, 76.69),
-(5, 18, 54, 0, 275.13),
-(5, 19, 89, 0, 73.71),
-(5, 20, 56, 0, 369.27),
-(6, 1, 78, 0, 168.9),
-(6, 2, 60, 0, 496.74),
-(6, 3, 88, 0, 61.16),
-(6, 4, 74, 0, 155.38),
-(6, 5, 53, 0, 201.14),
-(6, 6, 91, 0, 406.39),
-(6, 7, 77, 0, 78.77),
-(6, 8, 61, 0, 490.76),
-(6, 9, 77, 0, 315.21),
-(6, 10, 57, 0, 377.83),
-(6, 11, 61, 0, 485.69),
-(6, 12, 100, 0, 146.75),
-(6, 13, 89, 0, 394.02),
-(6, 14, 79, 0, 379.41),
-(6, 15, 79, 0, 434.16),
-(6, 16, 85, 0, 113.82),
-(6, 17, 77, 0, 155.77),
-(6, 18, 72, 0, 80.9),
-(6, 19, 70, 0, 425.47),
-(6, 20, 55, 0, 372.87),
-(7, 1, 63, 0, 224.66),
-(7, 2, 89, 0, 268.63),
-(7, 3, 77, 0, 488.11),
-(7, 4, 77, 0, 222.42),
-(7, 5, 86, 0, 408.52),
-(7, 6, 75, 0, 455.8),
-(7, 7, 72, 0, 429.11),
-(7, 8, 71, 0, 155.22),
-(7, 9, 64, 0, 476.33),
-(7, 10, 74, 0, 137.9),
-(7, 11, 55, 0, 123.79),
-(7, 12, 89, 0, 368.4),
-(7, 13, 97, 0, 117.88),
-(7, 14, 94, 0, 274.84),
-(7, 15, 77, 0, 195.47),
-(7, 16, 71, 0, 284.89),
-(7, 17, 98, 0, 355.94),
-(7, 18, 66, 0, 450.07),
-(7, 19, 86, 0, 337.88),
-(7, 20, 65, 0, 56.03),
-(8, 1, 86, 0, 333.81),
-(8, 2, 81, 0, 315.88),
-(8, 3, 90, 0, 356.2),
-(8, 4, 100, 0, 240.31),
-(8, 5, 97, 0, 444.83),
-(8, 6, 84, 0, 322.35),
-(8, 7, 69, 0, 89.4),
-(8, 8, 79, 0, 287.56),
-(8, 9, 87, 0, 271.08),
-(8, 10, 80, 0, 242.48),
-(8, 11, 56, 0, 397.54),
-(8, 12, 64, 0, 419.29),
-(8, 13, 87, 0, 334.39),
-(8, 14, 81, 0, 166.96),
-(8, 15, 70, 0, 433.27),
-(8, 16, 99, 0, 163.86),
-(8, 17, 99, 0, 443.42),
-(8, 18, 50, 0, 170.51),
-(8, 19, 82, 0, 420.75),
-(8, 20, 56, 0, 264.96),
-(9, 1, 78, 0, 96.94),
-(9, 2, 62, 0, 235.11),
-(9, 3, 91, 0, 410.2),
-(9, 4, 88, 0, 72.79),
-(9, 5, 88, 0, 244.24),
-(9, 6, 73, 0, 243.37),
-(9, 7, 96, 0, 281.41),
-(9, 8, 57, 0, 367.9),
-(9, 9, 73, 0, 296.89),
-(9, 10, 88, 0, 176.35),
-(9, 11, 54, 0, 132.86),
-(9, 12, 90, 0, 140.45),
-(9, 13, 95, 0, 459.66),
-(9, 14, 51, 0, 457.09),
-(9, 15, 75, 0, 458.01),
-(9, 16, 83, 0, 290.18),
-(9, 17, 53, 0, 182.28),
-(9, 18, 58, 0, 53.22),
-(9, 19, 92, 0, 241.16),
-(9, 20, 97, 0, 223.18),
-(10, 1, 77, 0, 252.89),
-(10, 2, 76, 0, 357.74),
-(10, 3, 90, 0, 278.97),
-(10, 4, 64, 0, 395.16),
-(10, 5, 67, 0, 399.12),
-(10, 6, 83, 0, 82.86),
-(10, 7, 67, 0, 392.92),
-(10, 8, 91, 0, 244.87),
-(10, 9, 87, 0, 384.16),
-(10, 10, 72, 0, 320.18),
-(10, 11, 53, 0, 346.27),
-(10, 12, 52, 0, 320.12),
-(10, 13, 65, 0, 445.31),
-(10, 14, 51, 0, 479.62),
-(10, 15, 97, 0, 351.59),
-(10, 16, 53, 0, 470.94),
-(10, 17, 63, 0, 243.74),
-(10, 18, 50, 0, 118.34),
-(10, 19, 63, 0, 238.54),
-(10, 20, 96, 0, 256.21),
-(11, 1, 81, 0, 71.51),
-(11, 2, 75, 0, 248.39),
-(11, 3, 64, 0, 203.65),
-(11, 4, 62, 0, 444.87),
-(11, 5, 97, 0, 137.19),
-(11, 6, 77, 0, 290.33),
-(11, 7, 88, 0, 222.79),
-(11, 8, 91, 0, 422.84),
-(11, 9, 56, 0, 202.29),
-(11, 10, 77, 0, 446.17),
-(11, 11, 86, 0, 451.89),
-(11, 12, 75, 0, 276.02),
-(11, 13, 85, 0, 55.97),
-(11, 14, 98, 0, 336.4),
-(11, 15, 68, 0, 275.19),
-(11, 16, 93, 0, 228.02),
-(11, 17, 63, 0, 115.34),
-(11, 18, 92, 0, 71.13),
-(11, 19, 77, 0, 195.36),
-(11, 20, 94, 0, 465.34),
-(12, 1, 93, 0, 258.17),
-(12, 2, 76, 0, 365.27),
-(12, 3, 54, 0, 132.18),
-(12, 4, 63, 0, 181.75),
-(12, 5, 81, 0, 396.46),
-(12, 6, 92, 0, 189.68),
-(12, 7, 82, 0, 138.11),
-(12, 8, 82, 0, 238.2),
-(12, 9, 97, 0, 73.38),
-(12, 10, 72, 0, 180.68),
-(12, 11, 72, 0, 439.46),
-(12, 12, 57, 0, 468.22),
-(12, 13, 79, 0, 441.88),
-(12, 14, 85, 0, 297.19),
-(12, 15, 58, 0, 269.77),
-(12, 16, 74, 0, 184.09),
-(12, 17, 53, 0, 156.51),
-(12, 18, 100, 0, 175.44),
-(12, 19, 80, 0, 224.1),
-(12, 20, 91, 0, 150.75),
-(13, 1, 84, 0, 91.53),
-(13, 2, 76, 0, 349.63),
-(13, 3, 91, 0, 426.41),
-(13, 4, 54, 0, 246.67),
-(13, 5, 64, 0, 278.28),
-(13, 6, 96, 0, 234.1),
-(13, 7, 81, 0, 348.38),
-(13, 8, 82, 0, 120.46),
-(13, 9, 66, 0, 252.03),
-(13, 10, 64, 0, 400.15),
-(13, 11, 85, 0, 240.67),
-(13, 12, 68, 0, 326.36),
-(13, 13, 69, 0, 410.89),
-(13, 14, 80, 0, 123.7),
-(13, 15, 66, 0, 288.0),
-(13, 16, 71, 0, 281.29),
-(13, 17, 67, 0, 105.43),
-(13, 18, 69, 0, 90.17),
-(13, 19, 95, 0, 93.76),
-(13, 20, 77, 0, 424.75),
-(14, 1, 80, 0, 470.14),
-(14, 2, 84, 0, 246.36),
-(14, 3, 91, 0, 217.19),
-(14, 4, 90, 0, 180.89),
-(14, 5, 74, 0, 380.37),
-(14, 6, 98, 0, 192.28),
-(14, 7, 51, 0, 272.36),
-(14, 8, 56, 0, 231.8),
-(14, 9, 56, 0, 138.43),
-(14, 10, 64, 0, 129.96),
-(14, 11, 53, 0, 265.3),
-(14, 12, 72, 0, 167.58),
-(14, 13, 81, 0, 322.1),
-(14, 14, 98, 0, 248.98),
-(14, 15, 69, 0, 95.04),
-(14, 16, 89, 0, 219.26),
-(14, 17, 67, 0, 455.59),
-(14, 18, 61, 0, 471.05),
-(14, 19, 97, 0, 376.39),
-(14, 20, 74, 0, 378.38),
-(15, 1, 80, 0, 309.38),
-(15, 2, 57, 0, 157.64),
-(15, 3, 69, 0, 205.43),
-(15, 4, 52, 0, 175.71),
-(15, 5, 81, 0, 379.89),
-(15, 6, 55, 0, 111.44),
-(15, 7, 64, 0, 74.69),
-(15, 8, 52, 0, 465.42),
-(15, 9, 63, 0, 190.64),
-(15, 10, 68, 0, 417.68),
-(15, 11, 100, 0, 299.6),
-(15, 12, 50, 0, 214.86),
-(15, 13, 54, 0, 201.11),
-(15, 14, 82, 0, 324.35),
-(15, 15, 52, 0, 113.54),
-(15, 16, 55, 0, 67.81),
-(15, 17, 64, 0, 358.06),
-(15, 18, 51, 0, 451.79),
-(15, 19, 90, 0, 140.4),
-(15, 20, 87, 0, 136.28),
-(16, 1, 100, 0, 187.94),
-(16, 2, 68, 0, 184.06),
-(16, 3, 77, 0, 73.27),
-(16, 4, 98, 0, 182.51),
-(16, 5, 93, 0, 52.03),
-(16, 6, 65, 0, 255.38),
-(16, 7, 50, 0, 84.33),
-(16, 8, 75, 0, 298.74),
-(16, 9, 72, 0, 82.71),
-(16, 10, 70, 0, 358.77),
-(16, 11, 84, 0, 397.51),
-(16, 12, 53, 0, 261.31),
-(16, 13, 61, 0, 212.55),
-(16, 14, 56, 0, 150.64),
-(16, 15, 99, 0, 125.87),
-(16, 16, 59, 0, 364.13),
-(16, 17, 52, 0, 332.5),
-(16, 18, 82, 0, 70.25),
-(16, 19, 67, 0, 435.25),
-(16, 20, 53, 0, 488.11),
-(17, 1, 61, 0, 323.3),
-(17, 2, 84, 0, 77.29),
-(17, 3, 61, 0, 123.29),
-(17, 4, 68, 0, 244.66),
-(17, 5, 91, 0, 149.03),
-(17, 6, 52, 0, 224.56),
-(17, 7, 99, 0, 147.34),
-(17, 8, 73, 0, 427.59),
-(17, 9, 52, 0, 117.37),
-(17, 10, 92, 0, 374.43),
-(17, 11, 52, 0, 130.64),
-(17, 12, 86, 0, 295.86),
-(17, 13, 96, 0, 359.9),
-(17, 14, 66, 0, 272.26),
-(17, 15, 69, 0, 98.87),
-(17, 16, 66, 0, 440.33),
-(17, 17, 75, 0, 434.1),
-(17, 18, 83, 0, 143.74),
-(17, 19, 60, 0, 290.71),
-(17, 20, 50, 0, 207.13),
-(18, 1, 75, 0, 133.93),
-(18, 2, 87, 0, 168.76),
-(18, 3, 66, 0, 104.55),
-(18, 4, 52, 0, 173.91),
-(18, 5, 74, 0, 485.98),
-(18, 6, 96, 0, 366.56),
-(18, 7, 66, 0, 260.28),
-(18, 8, 55, 0, 233.81),
-(18, 9, 76, 0, 308.95),
-(18, 10, 71, 0, 184.82),
-(18, 11, 68, 0, 461.06),
-(18, 12, 53, 0, 379.19),
-(18, 13, 67, 0, 229.4),
-(18, 14, 78, 0, 496.29),
-(18, 15, 50, 0, 383.63),
-(18, 16, 60, 0, 78.26),
-(18, 17, 81, 0, 261.85),
-(18, 18, 91, 0, 429.1),
-(18, 19, 58, 0, 415.14),
-(18, 20, 79, 0, 356.66),
-(19, 1, 82, 0, 292.05),
-(19, 2, 86, 0, 377.42),
-(19, 3, 99, 0, 138.69),
-(19, 4, 74, 0, 349.2),
-(19, 5, 99, 0, 259.29),
-(19, 6, 75, 0, 286.09),
-(19, 7, 84, 0, 432.97),
-(19, 8, 64, 0, 315.71),
-(19, 9, 100, 0, 283.56),
-(19, 10, 85, 0, 80.96),
-(19, 11, 53, 0, 349.99),
-(19, 12, 50, 0, 457.95),
-(19, 13, 79, 0, 276.74),
-(19, 14, 50, 0, 99.79),
-(19, 15, 87, 0, 359.02),
-(19, 16, 75, 0, 105.74),
-(19, 17, 57, 0, 399.33),
-(19, 18, 56, 0, 441.79),
-(19, 19, 67, 0, 212.32),
-(19, 20, 70, 0, 203.59),
-(20, 1, 63, 0, 317.35),
-(20, 2, 92, 0, 197.12),
-(20, 3, 99, 0, 193.07),
-(20, 4, 79, 0, 380.47),
-(20, 5, 59, 0, 185.42),
-(20, 6, 77, 0, 351.39),
-(20, 7, 86, 0, 276.27),
-(20, 8, 91, 0, 72.99),
-(20, 9, 90, 0, 112.36),
-(20, 10, 97, 0, 182.42),
-(20, 11, 53, 0, 383.68),
-(20, 12, 61, 0, 114.32),
-(20, 13, 51, 0, 319.09),
-(20, 14, 98, 0, 355.12),
-(20, 15, 91, 0, 219.92),
-(20, 16, 85, 0, 65.95),
-(20, 17, 82, 0, 392.47),
-(20, 18, 87, 0, 302.76),
-(20, 19, 85, 0, 213.98),
-(20, 20, 53, 0, 84.99);
+DELETE FROM holdings;
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 1, 21, 170.49);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 2, 61, 322.72);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 3, 11, 134.55);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 4, 51, 149.65);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 5, 66, 209.07);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 6, 49, 276.32);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 7, 65, 441.77);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 8, 59, 175.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 9, 29, 246.17);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 10, 67, 159.97);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 11, 69, 151.05);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 12, 15, 97.19);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 13, 93, 364.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 14, 22, 43.16);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 15, 48, 105.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 16, 20, 198.28);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 17, 100, 337.38);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 18, 65, 140.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 19, 16, 50.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (1, 20, 86, 100.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 1, 39, 178.43);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 2, 24, 307.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 3, 51, 133.96);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 4, 60, 150.48);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 5, 75, 197.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 6, 73, 292.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 7, 60, 448.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 8, 91, 176.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 9, 39, 256.75);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 10, 23, 160.88);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 11, 19, 157.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 12, 91, 93.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 13, 43, 374.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 14, 29, 44.33);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 15, 72, 114.85);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 16, 95, 213.62);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 17, 91, 361.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 18, 54, 138.84);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 19, 91, 54.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (2, 20, 8, 111.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 1, 38, 171.78);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 2, 6, 319.99);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 3, 99, 136.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 4, 72, 149.57);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 5, 56, 210.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 6, 46, 271.97);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 7, 77, 430.05);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 8, 80, 172.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 9, 27, 257.97);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 10, 82, 159.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 11, 97, 152.0);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 12, 86, 94.73);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 13, 28, 388.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 14, 65, 41.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 15, 5, 106.39);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 16, 51, 202.43);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 17, 59, 356.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 18, 94, 140.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 19, 16, 51.45);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (3, 20, 6, 100.89);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 1, 52, 172.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 2, 72, 306.19);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 3, 65, 139.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 4, 16, 140.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 5, 52, 208.42);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 6, 24, 286.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 7, 44, 434.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 8, 79, 179.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 9, 83, 257.27);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 10, 30, 161.55);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 11, 71, 155.36);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 12, 97, 89.39);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 13, 65, 377.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 14, 99, 42.32);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 15, 27, 107.93);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 16, 6, 200.03);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 17, 43, 341.46);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 18, 79, 132.75);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 19, 32, 52.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (4, 20, 86, 103.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 1, 33, 182.41);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 2, 93, 310.79);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 3, 61, 135.75);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 4, 16, 142.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 5, 33, 207.86);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 6, 13, 284.55);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 7, 79, 456.51);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 8, 95, 177.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 9, 18, 247.94);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 10, 92, 154.42);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 11, 64, 148.33);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 12, 68, 89.74);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 13, 8, 398.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 14, 79, 44.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 15, 72, 115.38);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 16, 78, 200.71);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 17, 56, 351.04);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 18, 39, 141.03);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 19, 94, 50.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (5, 20, 47, 109.5);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 1, 87, 175.74);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 2, 86, 316.89);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 3, 69, 137.8);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 4, 63, 144.94);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 5, 65, 215.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 6, 28, 266.67);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 7, 32, 464.84);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 8, 76, 166.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 9, 9, 243.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 10, 15, 162.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 11, 50, 159.64);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 12, 87, 95.64);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 13, 48, 400.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 14, 37, 41.49);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 15, 53, 109.28);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 16, 6, 210.37);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 17, 73, 360.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 18, 32, 135.8);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 19, 31, 52.62);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (6, 20, 21, 101.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 1, 81, 179.79);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 2, 91, 321.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 3, 5, 132.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 4, 23, 143.08);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 5, 8, 214.76);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 6, 15, 266.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 7, 90, 441.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 8, 74, 167.99);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 9, 55, 258.87);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 10, 34, 155.28);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 11, 57, 147.14);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 12, 38, 95.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 13, 97, 387.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 14, 58, 42.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 15, 18, 112.68);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 16, 27, 200.78);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 17, 52, 347.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 18, 38, 144.07);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 19, 42, 54.79);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (7, 20, 63, 101.73);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 1, 62, 175.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 2, 60, 318.32);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 3, 20, 130.1);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 4, 13, 151.55);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 5, 17, 208.46);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 6, 91, 279.95);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 7, 20, 465.62);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 8, 81, 168.41);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 9, 56, 262.74);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 10, 99, 164.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 11, 95, 150.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 12, 95, 90.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 13, 5, 365.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 14, 42, 41.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 15, 76, 110.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 16, 34, 197.49);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 17, 46, 342.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 18, 41, 143.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 19, 21, 51.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (8, 20, 80, 101.43);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 1, 37, 182.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 2, 35, 328.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 3, 48, 129.6);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 4, 8, 153.18);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 5, 77, 210.13);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 6, 16, 292.59);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 7, 25, 447.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 8, 44, 175.53);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 9, 24, 244.48);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 10, 70, 162.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 11, 14, 158.67);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 12, 93, 95.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 13, 63, 367.95);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 14, 63, 43.94);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 15, 55, 109.52);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 16, 23, 201.33);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 17, 91, 335.72);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 18, 58, 143.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 19, 36, 50.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (9, 20, 14, 103.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 1, 97, 174.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 2, 53, 317.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 3, 32, 129.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 4, 99, 152.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 5, 92, 196.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 6, 5, 278.8);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 7, 13, 451.69);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 8, 75, 176.65);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 9, 49, 243.52);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 10, 67, 153.23);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 11, 55, 151.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 12, 87, 91.17);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 13, 79, 399.33);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 14, 26, 43.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 15, 40, 107.03);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 16, 24, 204.42);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 17, 38, 343.07);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 18, 24, 139.37);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 19, 32, 50.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (10, 20, 17, 109.35);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 1, 27, 183.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 2, 15, 319.76);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 3, 16, 130.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 4, 86, 147.75);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 5, 16, 201.94);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 6, 5, 280.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 7, 39, 446.53);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 8, 62, 174.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 9, 28, 246.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 10, 43, 163.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 11, 12, 159.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 12, 90, 91.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 13, 97, 364.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 14, 68, 44.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 15, 61, 110.58);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 16, 19, 202.48);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 17, 22, 346.16);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 18, 14, 143.99);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 19, 5, 53.06);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (11, 20, 47, 106.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 1, 80, 179.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 2, 80, 321.76);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 3, 64, 134.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 4, 99, 139.69);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 5, 67, 205.76);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 6, 94, 265.74);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 7, 62, 429.94);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 8, 12, 166.8);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 9, 26, 238.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 10, 63, 155.71);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 11, 30, 156.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 12, 17, 91.16);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 13, 100, 371.98);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 14, 87, 43.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 15, 56, 108.41);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 16, 62, 203.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 17, 21, 336.47);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 18, 21, 139.17);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 19, 28, 53.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (12, 20, 86, 108.38);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 1, 60, 183.16);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 2, 55, 311.23);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 3, 24, 131.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 4, 6, 144.17);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 5, 100, 197.29);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 6, 91, 286.74);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 7, 35, 438.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 8, 11, 175.65);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 9, 47, 241.4);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 10, 95, 152.46);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 11, 79, 150.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 12, 88, 90.87);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 13, 66, 398.52);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 14, 79, 43.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 15, 40, 113.47);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 16, 14, 206.68);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 17, 26, 331.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 18, 10, 143.51);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 19, 99, 51.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (13, 20, 35, 109.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 1, 36, 185.51);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 2, 13, 328.71);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 3, 85, 133.82);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 4, 8, 150.42);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 5, 28, 204.67);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 6, 80, 283.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 7, 91, 444.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 8, 56, 181.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 9, 15, 251.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 10, 91, 154.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 11, 29, 157.07);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 12, 6, 90.5);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 13, 44, 391.79);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 14, 40, 41.48);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 15, 71, 112.63);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 16, 37, 212.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 17, 93, 336.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 18, 60, 138.16);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 19, 72, 52.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (14, 20, 55, 102.35);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 1, 28, 174.95);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 2, 66, 309.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 3, 59, 141.37);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 4, 26, 141.14);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 5, 78, 201.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 6, 46, 288.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 7, 92, 452.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 8, 97, 164.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 9, 57, 261.31);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 10, 75, 154.08);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 11, 42, 152.04);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 12, 42, 97.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 13, 66, 402.51);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 14, 13, 43.29);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 15, 86, 108.68);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 16, 25, 208.35);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 17, 58, 355.22);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 18, 16, 132.14);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 19, 10, 54.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (15, 20, 80, 102.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 1, 84, 180.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 2, 49, 320.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 3, 61, 139.48);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 4, 57, 152.59);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 5, 66, 207.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 6, 22, 265.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 7, 45, 465.99);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 8, 37, 171.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 9, 33, 248.67);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 10, 70, 162.14);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 11, 85, 152.04);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 12, 90, 90.25);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 13, 65, 394.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 14, 96, 41.79);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 15, 20, 114.18);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 16, 42, 213.97);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 17, 7, 357.08);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 18, 97, 142.97);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 19, 29, 50.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (16, 20, 86, 101.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 1, 67, 176.85);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 2, 8, 307.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 3, 32, 137.66);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 4, 65, 144.59);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 5, 9, 212.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 6, 10, 272.34);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 7, 7, 451.44);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 8, 46, 179.36);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 9, 60, 252.46);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 10, 16, 159.43);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 11, 39, 156.69);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 12, 9, 92.99);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 13, 29, 387.02);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 14, 27, 42.03);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 15, 98, 115.93);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 16, 79, 212.76);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 17, 46, 353.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 18, 6, 134.53);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 19, 63, 50.03);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (17, 20, 49, 104.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 1, 61, 175.15);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 2, 59, 307.01);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 3, 42, 142.72);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 4, 61, 143.83);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 5, 92, 212.73);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 6, 59, 274.36);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 7, 10, 439.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 8, 36, 164.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 9, 26, 244.37);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 10, 20, 155.91);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 11, 54, 156.65);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 12, 79, 96.75);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 13, 43, 377.54);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 14, 29, 43.93);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 15, 30, 106.23);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 16, 96, 215.7);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 17, 61, 354.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 18, 83, 143.69);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 19, 93, 50.78);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (18, 20, 67, 108.68);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 1, 27, 172.28);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 2, 91, 329.11);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 3, 57, 137.98);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 4, 12, 152.0);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 5, 9, 206.33);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 6, 79, 291.17);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 7, 13, 468.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 8, 54, 177.3);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 9, 15, 250.69);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 10, 6, 151.86);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 11, 63, 146.09);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 12, 83, 97.41);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 13, 33, 372.14);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 14, 33, 42.4);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 15, 82, 114.64);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 16, 29, 212.9);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 17, 58, 336.82);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 18, 40, 132.19);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 19, 53, 54.92);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (19, 20, 86, 104.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 1, 30, 171.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 2, 68, 303.06);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 3, 91, 131.0);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 4, 9, 141.18);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 5, 20, 205.24);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 6, 36, 275.61);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 7, 98, 433.78);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 8, 79, 166.56);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 9, 18, 251.41);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 10, 87, 158.46);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 11, 58, 155.2);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 12, 84, 92.29);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 13, 75, 391.12);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 14, 33, 41.62);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 15, 79, 110.37);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 16, 53, 211.21);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 17, 68, 364.26);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 18, 92, 143.1);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 19, 75, 50.81);
+INSERT INTO holdings (user_id, stock_id, quantity, avg_price) VALUES (20, 20, 17, 108.2);

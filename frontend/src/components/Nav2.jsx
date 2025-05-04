@@ -13,6 +13,7 @@ const NavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
+  const [accountInfo, setAccountInfo] = useState(null);
 
   // Fetch notifications on load
   useEffect(() => {
@@ -23,6 +24,14 @@ const NavBar = () => {
       .then((data) => setNotifications(data.notifications || []))
       .catch((err) => console.error("Notification fetch error:", err));
   }, []);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/api/profile`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setAccountInfo(data))
+      .catch((err) => console.error("Profile fetch error:", err));
+  }, []);
+
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
@@ -91,14 +100,20 @@ const NavBar = () => {
           <HiOutlineClipboardList className="nav-icon" />
         </Link>
 
+        
         <Link
           to="/profile"
           className={`nav-link ${location.pathname.includes("profile") ? "active" : ""}`}
         >
           <div className="user-avatar"></div>
         </Link>
-
-        <FaChevronDown className="dropdown-icon" />
+        {accountInfo?.phone === null && (
+          <div className="account-warning-popup">
+            Please fill the account details
+          </div>
+        )}
+        
+  
         <button onClick={handleLogout} className="logout-button">
           Logout
         </button>

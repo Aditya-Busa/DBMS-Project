@@ -241,3 +241,15 @@
     max-width: 300px;
   }
 }
+
+.index-performance {
+  padding: 1rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.index-row {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}

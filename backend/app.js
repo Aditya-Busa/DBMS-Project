@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+const dayjs = require('dayjs');
 const cors = require("cors");
 const { Pool } = require("pg");
 
@@ -256,7 +257,7 @@ app.delete("/api/watchlist/remove", async (req, res) => {
 app.get("/api/stocks/all", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT stock_id, symbol, company_name, current_price, count
+      SELECT stock_id, symbol, company_name, current_price, market ,count
       FROM stocks
       ORDER BY company_name ASC
     `);
@@ -869,7 +870,7 @@ async function simulateBotTrading() {
           timeout: 500 // 5 second timeout
         });
 
-        //console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare} | Status: ${response.data.message || 'Success'}`);
+        console.log(`[BOT] ${orderType.toUpperCase()} | User ${userId} | Stock ${stockId} | Qty ${quantity} | Price ₹${pricePerShare} | Status: ${response.data.message || 'Success'}`);
 
       } catch (err) {
         console.error("Bot order error:", err.response?.data?.message || err.message);
@@ -1324,31 +1325,6 @@ app.get('/api/top-gainers-losers', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-app.get('/api/market-performance', async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT 
-        market,
-        SUM(current_price) AS total_current,
-        SUM(sph.initial_price) AS total_initial
-      FROM stocks s
-      JOIN stock_price_history sph ON s.stock_id = sph.stock_id
-      GROUP BY market
-    `);
-    
-    const performance = result.rows.map(row => ({
-      market: row.market,
-      percentage_change: ((row.total_current - row.total_initial) / row.total_initial) * 100
-    }));
-
-    res.json(performance);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch market performance" });
-  }
-});
-
 // routes/orders.js or wherever appropriate
 app.post('/api/orders/cancel/:orderId', async (req, res) => {
   const { orderId } = req.params;
@@ -1383,6 +1359,32 @@ app.post('/api/orders/cancel/:orderId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+app.get('/api/market-performance', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        market,
+        SUM(current_price) AS total_current,
+        SUM(sph.initial_price) AS total_initial
+      FROM stocks s
+      JOIN stock_price_history sph ON s.stock_id = sph.stock_id
+      GROUP BY market
+    `);
+    
+    const performance = result.rows.map(row => ({
+      market: row.market,
+      percentage_change: ((row.total_current - row.total_initial) / row.total_initial) * 100
+    }));
+
+    res.json(performance);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch market performance" });
+  }
+});
+
+
+
 
 
 monitor();

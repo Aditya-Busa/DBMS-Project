@@ -131,3 +131,4 @@ CREATE TABLE stock_price_history (
   CONSTRAINT unique_stock_id UNIQUE (stock_id)
 );
 
+

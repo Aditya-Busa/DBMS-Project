@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Allow content to grow downward */
+  justify-content: center; /* Allow content to grow downward */
   min-height: 100vh; /* Let content grow beyond viewport */
   padding: 40px 20px;
   text-align: center;

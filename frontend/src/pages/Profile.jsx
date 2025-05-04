@@ -4,26 +4,21 @@ import NavBar from "../components/Nav2";
 import { apiUrl } from "../config/config";
 import "../css/Profile.css";
 
-// Date formatting utility
+// Utility to format date
 const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    
-    try {
-      // Handle both Date objects and ISO strings
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString; // Return original if invalid
-      
-      // Format as DD/MM/YYYY
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      
-      return `${day}/${month}/${year}`;
-    } catch (e) {
-      console.error("Date formatting error:", e);
-      return dateString; // Fallback to original string
-    }
-  };
+  if (!dateString) return "-";
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch (e) {
+    console.error("Date formatting error:", e);
+    return dateString;
+  }
+};
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -47,9 +42,7 @@ const Profile = () => {
       const response = await fetch(`${apiUrl}/api/profile`, {
         credentials: 'include'
       });
-      
       if (!response.ok) throw new Error('Failed to fetch profile');
-
       const data = await response.json();
       setUserData(data);
       setFormData({
@@ -65,7 +58,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     if (!userId) {
@@ -89,7 +82,7 @@ const Profile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      
+
       if (response.ok) {
         await fetchProfileData();
         setEditMode(false);
@@ -99,6 +92,17 @@ const Profile = () => {
     } catch (err) {
       console.error("Update error:", err);
     }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      phone: userData.phone || "",
+      dob: userData.dob || "",
+      pan: userData.pan || "",
+      gender: userData.gender || "",
+      maritalStatus: userData.maritalStatus || ""
+    });
+    setEditMode(false);
   };
 
   if (loading) return <div className="profile-loading">Loading profile...</div>;
@@ -113,27 +117,24 @@ const Profile = () => {
       <NavBar />
       <div className="profile-container">
         <h2 className="profile-title">Profile Details</h2>
-        
+        <h2 className="account-holder-name">Account Holder: {userData?.username || "Unnamed User"}</h2>
         <div className="profile-grid">
-          {/* Left Column */}
           <div className="profile-column">
-          <div className="detail-group">
-            <label>DATE OF BIRTH (DD/MM/YYYY)</label>
-            {editMode ? (
+            <div className="detail-group">
+              <label>DATE OF BIRTH (DD/MM/YYYY)</label>
+              {editMode ? (
                 <input
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleInputChange}
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleInputChange}
                 />
-            ) : (
+              ) : (
                 <p>
-                {userData.dob ? formatDate(userData.dob) : "-"} 
-                <button className="edit-btn" onClick={() => setEditMode(true)}>
-                    EDIT
-                </button>
+                  {userData.dob ? formatDate(userData.dob) : "-"} 
+                  <button className="edit-btn" onClick={() => setEditMode(true)}>EDIT</button>
                 </p>
-            )}
+              )}
             </div>
 
             <div className="detail-group">
@@ -165,7 +166,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="profile-column">
             <div className="detail-group">
               <label>EMAIL</label>
@@ -218,7 +218,7 @@ const Profile = () => {
         {editMode && (
           <div className="form-actions">
             <button className="save-btn" onClick={handleSubmit}>SAVE</button>
-            <button className="cancel-btn" onClick={() => setEditMode(false)}>CANCEL</button>
+            <button className="cancel-btn" onClick={handleCancel}>CANCEL</button>
           </div>
         )}
       </div>

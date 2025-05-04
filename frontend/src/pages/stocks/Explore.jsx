@@ -248,6 +248,7 @@ const Explore = () => {
             ) : (
               <p>No data available</p>
             )}
+            
           </div>
 
           <div className="button-group">
